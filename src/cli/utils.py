@@ -93,3 +93,50 @@ def print_panel(menssage: str, title: str = "Next steps"):
             width=140,
         ),
     )
+
+def print_diff_table(the_dict: dict, table_name: str = "", field: str = ""):
+    table = Table(
+        title=table_name,
+        title_style="bold",
+        row_styles=["none", "dim"],
+        border_style="bright_yellow",
+        pad_edge=False,
+        box=box.MINIMAL,
+    )
+
+    table.add_column(
+        field,
+        no_wrap=True,
+        header_style="bold cyan",
+        footer_style="bright_cian",
+        style="cyan",
+    )
+
+    table.add_column(
+        "Planned",
+        no_wrap=True,
+        header_style="bold red",
+        footer_style="bright_red",
+        style="red",
+    )
+
+    table.add_column(
+        "Developed",
+        no_wrap=True,
+        header_style="bold red",
+        footer_style="bright_red",
+        style="red",
+    )
+
+    table.add_column(
+        "Diff",
+        no_wrap=True,
+        header_style="bold red",
+        footer_style="bright_red",
+        style="red",
+    )
+
+    for field, value in the_dict.items():
+        table.add_row(str(field), str(value['planned']), str(value['developed']), str(value['diff']))
+
+    console.print(table)
