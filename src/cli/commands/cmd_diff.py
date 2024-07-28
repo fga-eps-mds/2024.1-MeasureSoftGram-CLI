@@ -5,20 +5,19 @@ from pathlib import Path
 
 from rich import print
 from rich.console import Console
-from staticfiles import DEFAULT_PRE_CONFIG as pre_config
 
 from core.transformations import diff
-from util import ReleasePlannedAndDevelopedOfDifferentSizes
 
-from src.cli.jsonReader import open_json_file, read_multiple_files
-from src.cli.resources.characteristic import calculate_characteristics
-from src.cli.resources.measure import calculate_measures
-from src.cli.resources.tsqmi import calculate_tsqmi
-from src.cli.resources.subcharacteristic import calculate_subcharacteristics
-from src.cli.utils import print_diff_table, print_error, print_info, print_panel, print_rule, print_table
-from src.cli.aggregate_metrics import aggregate_metrics
+from src.cli.jsonReader import open_json_file
+from src.cli.utils import (
+    print_diff_table,
+    print_error,
+    print_info,
+    print_panel,
+    print_rule,
+)
 from src.cli.exceptions import exceptions
-from src.config.settings import DEFAULT_CONFIG_PATH, DIFF_FILE_CONFIG, FILE_CONFIG
+from src.config.settings import DEFAULT_CONFIG_PATH, DIFF_FILE_CONFIG
 
 logger = logging.getLogger("msgram")
 
@@ -27,7 +26,7 @@ def read_config_file(config_path):
     try:
         json = open_json_file(config_path / DIFF_FILE_CONFIG)
 
-        return sorted(json, key=lambda x: x['key'])
+        return sorted(json, key=lambda x: x["key"])
     except exceptions.MeasureSoftGramCLIException as e:
         print_error(
             f"[red]Error reading msgram_diff.json config file in {config_path}: {e}\n"
@@ -43,15 +42,17 @@ def read_calculated_file(extracted_calculation):
         json = open_json_file(extracted_calculation)
 
         for item in json:
-            characteristics = sorted(item['characteristics'], key=lambda x: x['key'])
-            repository = item['repository'][0]['value']
-            version = item['version'][0]['value']
+            characteristics = sorted(item["characteristics"], key=lambda x: x["key"])
+            repository = item["repository"][0]["value"]
+            version = item["version"][0]["value"]
 
-            calculated_data.append({
-                'repository': repository,
-                'version': version,
-                'characteristics': characteristics
-            })
+            calculated_data.append(
+                {
+                    "repository": repository,
+                    "version": version,
+                    "characteristics": characteristics,
+                }
+            )
 
         return calculated_data
     except exceptions.MeasureSoftGramCLIException as e:
@@ -68,22 +69,34 @@ def calculate_diff(planned, calculated):
     try:
         for calculated_item in calculated:
             diff_values = []
-            if len(calculated_item['characteristics']) != len(planned):
-                raise ReleasePlannedAndDevelopedOfDifferentSizes(
-                    "The size between planned and developed release vectors is not equal.")
+            if len(calculated_item["characteristics"]) != len(planned):
+                raise exceptions.MeasureSoftGramCLIException(
+                    "The size between planned and developed release vectors is not equal."
+                )
 
-            data_planned, data_calculated = extract_values(planned, calculated_item['characteristics'])
+            data_planned, data_calculated = extract_values(
+                planned, calculated_item["characteristics"]
+            )
 
             diff_calculated = diff(data_planned, data_calculated)
 
             for index in range(len(planned)):
-                diff_values.append({'key': planned[index]['key'],
-                                    'planned': planned[index]['value'],
-                                    'developed': calculated_item['characteristics'][index]['value'],
-                                    'diff': diff_calculated[index]})
+                diff_values.append(
+                    {
+                        "key": planned[index]["key"],
+                        "planned": planned[index]["value"],
+                        "developed": calculated_item["characteristics"][index]["value"],
+                        "diff": diff_calculated[index],
+                    }
+                )
 
-            formated_result.append({'repository': calculated_item['repository'],
-                                    'version': calculated_item['version'], 'characteristics': diff_values})
+            formated_result.append(
+                {
+                    "repository": calculated_item["repository"],
+                    "version": calculated_item["version"],
+                    "characteristics": diff_values,
+                }
+            )
 
         return formated_result, True
     except exceptions.MeasureSoftGramCLIException as e:
@@ -142,9 +155,15 @@ def show_results(output_format, data_calculated, config_path):
 
 def show_tabulate(data_calculated):
     for calculated in data_calculated:
-        characteristics = {item['key']: {k: v for k, v in item.items() if k != 'key'}
-                           for item in calculated['characteristics']}
-        print_diff_table(characteristics, f"{calculated['repository']} - {calculated['version']}", "Characteristics")
+        characteristics = {
+            item["key"]: {k: v for k, v in item.items() if k != "key"}
+            for item in calculated["characteristics"]
+        }
+        print_diff_table(
+            characteristics,
+            f"{calculated['repository']} - {calculated['version']}",
+            "Characteristics",
+        )
 
 
 def export_json(data_calculated: list, file_path: Path = DEFAULT_CONFIG_PATH):
@@ -162,17 +181,19 @@ def export_csv(data_calculated: list, file_path: Path = Path("DEFAULT_CONFIG_PAT
     file_path = file_path.joinpath("calc_diff_msgram.csv")
 
     with open(file_path, "w", newline="") as csv_file:
-        fieldnames = ['repository', 'version', 'key', 'planned', 'developed', 'diff']
+        fieldnames = ["repository", "version", "key", "planned", "developed", "diff"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
         writer.writeheader()
         for data in data_calculated:
-            for row in data['characteristics']:
-                writer.writerow({
-                    'repository': data['repository'],
-                    'version': data['version'],
-                    **row
-                })
+            for row in data["characteristics"]:
+                writer.writerow(
+                    {
+                        "repository": data["repository"],
+                        "version": data["version"],
+                        **row,
+                    }
+                )
 
     print(f"Success: {file_path.name} exported as CSV")
 
@@ -182,11 +203,12 @@ def extract_values(planned, calculated):
     vector_planned = []
 
     for x in range(len(planned)):
-        if (planned[x]['key'] != calculated[x]['key']):
+        if planned[x]["key"] != calculated[x]["key"]:
             raise exceptions.MeasureSoftGramCLIException(
-                "Planned and calculated files have differents characteristics")
+                "Planned and calculated files have differents characteristics"
+            )
         else:
-            vector_calculated.append(calculated[x]['value'])
-            vector_planned.append(planned[x]['value'])
+            vector_calculated.append(calculated[x]["value"])
+            vector_planned.append(planned[x]["value"])
 
     return vector_planned, vector_calculated
