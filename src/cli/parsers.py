@@ -96,6 +96,16 @@ def create_parser():
     )
 
     parser_extract.add_argument(
+        "-lb",
+        "--label",
+        type=str,
+        default="US,User Story,User Stories",
+        help=(
+            "Selected label name for extracted user story issues. Format 'XX YY'. Default values, not case sensitive: 'US', 'User Story' or 'User Stories'"
+        ),
+    )
+
+    parser_extract.add_argument(
         "-le",
         "--language_extension",
         type=str,
