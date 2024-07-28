@@ -118,12 +118,14 @@ def calculate_all(json_data, file_name, config):
         "repository": [{"key": "repository", "value": repository}],
         "version": [{"key": "version", "value": version}] if version else [],
         "measures": data_measures["measures"] if data_measures else [],
-        "subcharacteristics": data_subcharacteristics["subcharacteristics"]
-        if data_subcharacteristics
-        else [],
-        "characteristics": data_characteristics["characteristics"]
-        if data_characteristics
-        else [],
+        "subcharacteristics": (
+            data_subcharacteristics["subcharacteristics"]
+            if data_subcharacteristics
+            else []
+        ),
+        "characteristics": (
+            data_characteristics["characteristics"] if data_characteristics else []
+        ),
         "tsqmi": data_tsqmi["tsqmi"] if data_tsqmi else [],
     }
 
@@ -186,12 +188,17 @@ def show_tree(data_calculated, pre_config):
         for subchar_c in char_c["subcharacteristics"]:
             subchar = get_obj_by_element(subcharacteristics, "key", subchar_c["key"])
             if subchar:
-                sub_char_tree = Node(f"[blue]{subchar['key']} {subchar['value']}", parent=char_tree)
+                sub_char_tree = Node(
+                    f"[blue]{subchar['key']} {subchar['value']}", parent=char_tree
+                )
 
                 for measure_c in subchar_c["measures"]:
                     measure = get_obj_by_element(measures, "key", measure_c["key"])
                     if measure:
-                        Node(f"[yellow]{measure['key']} {measure['value']}", parent=sub_char_tree)
+                        Node(
+                            f"[yellow]{measure['key']} {measure['value']}",
+                            parent=sub_char_tree,
+                        )
 
     for pre, fill, node in RenderTree(tsqmi_tree):
         print(f"{pre}{node.name}")

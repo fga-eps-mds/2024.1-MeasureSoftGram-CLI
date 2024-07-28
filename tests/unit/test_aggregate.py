@@ -13,7 +13,7 @@ from src.cli.aggregate_metrics import (
     process_github_metrics,
     process_sonar_metrics,
     aggregate_metrics,
-    find_common_part
+    find_common_part,
 )
 
 
@@ -93,7 +93,9 @@ def test_process_github_metrics():
 
     metrics = {"sonar": ["some_metric"], "github": ["resolved_issues", "total_issues"]}
 
-    result = process_github_metrics(folder_path, [github_file_name, github_file_name], metrics)
+    result = process_github_metrics(
+        folder_path, [github_file_name, github_file_name], metrics
+    )
 
     expected_result = (
         github_file_name,
@@ -152,10 +154,12 @@ def test_aggregate_metrics():
         folder_path = temp_dir
 
         msgram_file1 = os.path.join(
-            folder_path, "fga-eps-mds-2023-2-MeasureSoftGram-CLI-01-05-2023-21-40-30-develop-extracted.msgram"
+            folder_path,
+            "fga-eps-mds-2023-2-MeasureSoftGram-CLI-01-05-2023-21-40-30-develop-extracted.msgram",
         )
         msgram_file2 = os.path.join(
-            folder_path, "github_fga-eps-mds-2023-2-MeasureSoftGram-CLI-09-12-2023-01-24-36-extracted.msgram"
+            folder_path,
+            "github_fga-eps-mds-2023-2-MeasureSoftGram-CLI-09-12-2023-01-24-36-extracted.msgram",
         )
 
         with open(msgram_file1, "w") as file:
@@ -177,7 +181,8 @@ def test_aggregate_metrics():
         assert result is True
 
         output_file_path = os.path.join(
-            folder_path, "fga-eps-mds-2023-2-MeasureSoftGram-CLI-01-05-2023-21-40-30-develop-extracted.metrics"
+            folder_path,
+            "fga-eps-mds-2023-2-MeasureSoftGram-CLI-01-05-2023-21-40-30-develop-extracted.metrics",
         )
 
         assert os.path.exists(output_file_path)
@@ -200,11 +205,19 @@ def test_aggregate_metrics():
 def test_find_common_part():
     sonar_filename = "fga-eps-mds-2023-2-MeasureSoftGram-Parser-02-06-2023-21-40-30-develop-extracted"
     github_files = [
-        ("github_fga-eps-mds-2023-2-MeasureSoftGram-Parser-09-12-2023-01-24-36-extracted.msgram", "Metrics1"),
-        ("github_fga-eps-mds-2023-2-MeasureSoftGram-CLI-09-12-2023-01-24-36-extracted.msgram", "Metrics2")
+        (
+            "github_fga-eps-mds-2023-2-MeasureSoftGram-Parser-09-12-2023-01-24-36-extracted.msgram",
+            "Metrics1",
+        ),
+        (
+            "github_fga-eps-mds-2023-2-MeasureSoftGram-CLI-09-12-2023-01-24-36-extracted.msgram",
+            "Metrics2",
+        ),
     ]
 
-    with patch("builtins.print"):  # Mocking the print function to avoid print statements during testing
+    with patch(
+        "builtins.print"
+    ):  # Mocking the print function to avoid print statements during testing
         result = find_common_part(sonar_filename, github_files)
 
     assert result == "Metrics1"

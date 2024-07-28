@@ -23,30 +23,32 @@ CALCULATE_ARGS = {
 def test_show_tree(capfd):
 
     data_calculated = {
-        'repository': [{'key': 'repository', 'value': 'fga-eps-mds-2022-2-MeasureSoftGram-CLI'}],
-        'version': [{'key': 'version', 'value': '01-05-2023-21-40'}],
-        'measures': [
-            {'key': 'passed_tests', 'value': 1.0},
-            {'key': 'test_builds', 'value': 0.9996066627522133},
-            {'key': 'test_coverage', 'value': 0.40234848484848484},
-            {'key': 'non_complex_file_density', 'value': 0.44347274991556906},
-            {'key': 'commented_file_density', 'value': 0.04318181818181818},
-            {'key': 'duplication_absence', 'value': 1.0},
-            {'key': 'team_throughput', 'value': 0.6969696969696971},
-            {'key': 'ci_feedback_time', 'value': 0.06117908787541713}
+        "repository": [
+            {"key": "repository", "value": "fga-eps-mds-2022-2-MeasureSoftGram-CLI"}
         ],
-        'subcharacteristics': [
-            {'key': 'testing_status', 'value': 0.8421061048464034},
-            {'key': 'maturity', 'value': 0.06117908787541713},
-            {'key': 'modifiability', 'value': 0.6415437113263573},
-            {'key': 'functional_completeness', 'value': 0.6969696969696971}
+        "version": [{"key": "version", "value": "01-05-2023-21-40"}],
+        "measures": [
+            {"key": "passed_tests", "value": 1.0},
+            {"key": "test_builds", "value": 0.9996066627522133},
+            {"key": "test_coverage", "value": 0.40234848484848484},
+            {"key": "non_complex_file_density", "value": 0.44347274991556906},
+            {"key": "commented_file_density", "value": 0.04318181818181818},
+            {"key": "duplication_absence", "value": 1.0},
+            {"key": "team_throughput", "value": 0.6969696969696971},
+            {"key": "ci_feedback_time", "value": 0.06117908787541713},
         ],
-        'characteristics': [
-            {'key': 'reliability', 'value': 0.5970282960684735},
-            {'key': 'maintainability', 'value': 0.6415437113263573},
-            {'key': 'functional_suitability', 'value': 0.6969696969696971}
+        "subcharacteristics": [
+            {"key": "testing_status", "value": 0.8421061048464034},
+            {"key": "maturity", "value": 0.06117908787541713},
+            {"key": "modifiability", "value": 0.6415437113263573},
+            {"key": "functional_completeness", "value": 0.6969696969696971},
         ],
-        'tsqmi': [{'key': 'tsqmi', 'value': 0.6455181338484177}]
+        "characteristics": [
+            {"key": "reliability", "value": 0.5970282960684735},
+            {"key": "maintainability", "value": 0.6415437113263573},
+            {"key": "functional_suitability", "value": 0.6969696969696971},
+        ],
+        "tsqmi": [{"key": "tsqmi", "value": 0.6455181338484177}],
     }
 
     expected_output = (
