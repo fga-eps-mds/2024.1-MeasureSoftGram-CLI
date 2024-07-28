@@ -7,19 +7,19 @@ import numpy as np
 
 logger = logging.getLogger("msgram")
 
-def read_json_file(file_path, sort_key=None):
+def read_planned_file(file_path, sort_key=None):
     try:
         json_data = open_json_file(file_path)
         return sorted(json_data, key=lambda x: x[sort_key]) if sort_key else json_data
     except exceptions.MeasureSoftGramCLIException as e:
-        print_error(f"[red]Error reading file {file_path}: {e}\n")
+        print_error(f"[red]Error reading planned file in {file_path}: {e}\n")
         print_rule()
         exit(1)
 
-def read_calculated_file(extracted_calculation):
+def read_calculated_file(file_path):
     try:
         calculated_data = []
-        json = open_json_file(extracted_calculation)
+        json = open_json_file(file_path)
         for item in json:
             characteristics = sorted(item["characteristics"], key=lambda x: x["key"])
             repository = item["repository"][0]["value"]
@@ -35,7 +35,7 @@ def read_calculated_file(extracted_calculation):
         return calculated_data
     except exceptions.MeasureSoftGramCLIException as e:
         print_error(
-            f"[red]Error reading calculated file in {extracted_calculation}: {e}\n"
+            f"[red]Error reading calculated file in {file_path}: {e}\n"
         )
         print_rule()
         exit(1)
@@ -49,7 +49,7 @@ def command_norm_diff(args):
         print_error(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
-    planned_data = read_json_file(planned_path, sort_key="key")
+    planned_data = read_planned_file(planned_path, sort_key="key")
     calculated_data = read_calculated_file(calculated_path)
 
     planned_vector, calculated_vector = extract_values(planned_data, calculated_data)
@@ -58,7 +58,6 @@ def command_norm_diff(args):
     print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]")
     print_info("[#A9A9A9]For more detailed informations use 'diff' command.[/]")
     print(f"Norm Diff: {norm_diff_value}")
-
     print_rule()
 
 def extract_values(planned_data, calculated_data):
