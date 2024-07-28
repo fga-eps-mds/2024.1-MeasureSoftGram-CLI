@@ -127,7 +127,9 @@ def process_github_metrics(folder_path, github_files, metrics):
         github_file_content = read_msgram(github_file_path)
 
         if not github_file_content:
-            print_error(f"> [red] Error to read github metrics in: {github_file_path}\n")
+            print_error(
+                f"> [red] Error to read github metrics in: {github_file_path}\n"
+            )
             continue
 
         github_key = next(iter(github_file_content.keys() - metrics["sonar"]), "")
@@ -155,9 +157,9 @@ def process_github_metrics(folder_path, github_files, metrics):
 def find_common_part(sonar_filename, github_result):
     sonar_filename_root, _ = os.path.splitext(sonar_filename)
 
-    sonar_parts = sonar_filename_root.split('-')
+    sonar_parts = sonar_filename_root.split("-")
     if len(sonar_parts) >= 7:
-        sonar_key = '-'.join(sonar_parts[:7])
+        sonar_key = "-".join(sonar_parts[:7])
 
         for github_filename, github_metrics in github_result:
             github_filename_root, _ = os.path.splitext(github_filename)
@@ -187,9 +189,7 @@ def aggregate_metrics(folder_path, config: json):
     config_has_github = should_process_github_metrics(config)
 
     if config_has_github:
-        github_result = process_github_metrics(
-            folder_path, github_files, metrics
-        )
+        github_result = process_github_metrics(folder_path, github_files, metrics)
 
         if not github_result:
             print_error("> [red]Error: Unexpected result from process_github_metrics")

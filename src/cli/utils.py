@@ -94,6 +94,7 @@ def print_panel(menssage: str, title: str = "Next steps"):
         ),
     )
 
+
 def print_diff_table(the_dict: dict, table_name: str = "", field: str = ""):
     table = Table(
         title=table_name,
@@ -137,6 +138,11 @@ def print_diff_table(the_dict: dict, table_name: str = "", field: str = ""):
     )
 
     for field, value in the_dict.items():
-        table.add_row(str(field), str(value['planned']), str(value['developed']), str(value['diff']))
+        table.add_row(
+            str(field),
+            str(value["planned"]),
+            str(value["developed"]),
+            str(value["diff"]),
+        )
 
     console.print(table)
