@@ -9,6 +9,8 @@ __pycache__/
 venv/
 ENV/
 .tox
+msgram-cli-venv
+.python-version
 
 # Distribution / packaging
 .Python
