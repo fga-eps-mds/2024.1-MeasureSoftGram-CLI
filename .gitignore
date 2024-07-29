@@ -48,3 +48,9 @@ analytics-raw-data/
 **/*.log
 
 setup.py
+
+# Vim
+*.swp
+
+# ctags
+tags
