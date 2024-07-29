@@ -173,6 +173,8 @@ def create_parser():
         help="Path to the json with the calculated metrics.",
     )
 
-    parser_norm_diff.set_defaults(func=command_norm_diff)  # function command list config
+    parser_norm_diff.set_defaults(
+        func=command_norm_diff
+    )  # function command list config
 
     return parser

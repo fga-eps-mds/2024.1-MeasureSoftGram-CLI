@@ -7,6 +7,7 @@ import numpy as np
 
 logger = logging.getLogger("msgram")
 
+
 def read_planned_file(file_path, sort_key=None):
     try:
         json_data = open_json_file(file_path)
@@ -15,6 +16,7 @@ def read_planned_file(file_path, sort_key=None):
         print_error(f"[red]Error reading planned file in {file_path}: {e}\n")
         print_rule()
         exit(1)
+
 
 def read_calculated_file(file_path):
     try:
@@ -34,11 +36,10 @@ def read_calculated_file(file_path):
 
         return calculated_data
     except exceptions.MeasureSoftGramCLIException as e:
-        print_error(
-            f"[red]Error reading calculated file in {file_path}: {e}\n"
-        )
+        print_error(f"[red]Error reading calculated file in {file_path}: {e}\n")
         print_rule()
         exit(1)
+
 
 def command_norm_diff(args):
     try:
@@ -60,25 +61,27 @@ def command_norm_diff(args):
     print(f"Norm Diff: {norm_diff_value}")
     print_rule()
 
+
 def extract_values(planned_data, calculated_data):
     try:
         planned = planned_data
         calculated = []
         for item in calculated_data:
-            for characteristic in item['characteristics']:
-                calculated.append({'key': characteristic['key'], 'value': characteristic['value']})
+            for characteristic in item["characteristics"]:
+                calculated.append(
+                    {"key": characteristic["key"], "value": characteristic["value"]}
+                )
 
-
-        planned_keys = {item['key'].strip() for item in planned}
-        calculated_keys = {item['key'].strip() for item in calculated}
+        planned_keys = {item["key"].strip() for item in planned}
+        calculated_keys = {item["key"].strip() for item in calculated}
 
         if planned_keys != calculated_keys:
             raise exceptions.MeasureSoftGramCLIException(
                 "Planned and calculated files have different characteristics"
             )
-        
-        planned_dict = {item['key'].strip(): item['value'] for item in planned}
-        calculated_dict = {item['key'].strip(): item['value'] for item in calculated}
+
+        planned_dict = {item["key"].strip(): item["value"] for item in planned}
+        calculated_dict = {item["key"].strip(): item["value"] for item in calculated}
 
         planned_values = [planned_dict[key] for key in planned_keys]
         calculated_values = [calculated_dict[key] for key in planned_keys]
