@@ -100,7 +100,7 @@ def create_parser():
         "--label",
         type=str,
         help=(
-            "Selected label name for extracted user story issues. Format 'XX YY'"
+            "Selected label name for extracted user story issues. Format 'XX YY'."
             + " Default values, not case sensitive: 'US', 'User Story' or 'User Stories'"
         ),
     )
