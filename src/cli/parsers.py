@@ -2,10 +2,12 @@ import argparse
 
 from pathlib import Path
 
+from src.cli.commands.cmd_diff import command_diff
 from src.cli.commands.cmd_init import command_init
 from src.cli.commands.cmd_extract import command_extract
 from src.cli.commands.cmd_calculate import command_calculate
 from src.cli.commands.cmd_list import command_list
+from src.cli.commands.cmd_norm_diff import command_norm_diff
 
 from src.config.settings import (
     AVAILABLE_IMPORTS,
@@ -161,5 +163,60 @@ def create_parser():
         help=("The format of the output (export) values are: ".join(SUPPORTED_FORMATS)),
     )
     parser_calculate.set_defaults(func=command_calculate)  # function command calculate
+
+    # =====================================< COMMAND norm-diff >=====================================
+    parser_norm_diff = subparsers.add_parser(
+        "norm-diff",
+        help="Calculate the norm difference between the planned metrics and the developed.",
+    )
+
+    parser_norm_diff.add_argument(
+        "-p",
+        "--planned_path",
+        type=lambda p: Path(p).absolute(),
+        help="Path to the json with the planned metrics.",
+    )
+
+    parser_norm_diff.add_argument(
+        "-c",
+        "--calculated_path",
+        type=lambda p: Path(p).absolute(),
+        help="Path to the json with the calculated metrics.",
+    )
+
+    parser_norm_diff.set_defaults(
+        func=command_norm_diff
+    )  # function command list config
+
+    # =====================================< COMMAND diff >=====================================
+    parser_calculate = subparsers.add_parser(
+        "diff",
+        help="Calculates differences between planned and developed values. Returns the result vector.",
+    )
+
+    parser_calculate.add_argument(
+        "-ec",
+        "--extracted_calculation",
+        type=lambda p: Path(p).absolute(),
+        help="Path to the calculated directory",
+    )
+
+    parser_calculate.add_argument(
+        "-cp",
+        "--config_path",
+        type=lambda p: Path(p).absolute(),
+        default=DEFAULT_CONFIG_PATH,
+        help="Path to the config directory",
+    )
+
+    parser_calculate.add_argument(
+        "-o",
+        "--output_format",
+        type=str,
+        choices=AVAILABLE_GEN_FORMATS,
+        default="json",
+        help=("The format of the output (export) values are: ".join(SUPPORTED_FORMATS)),
+    )
+    parser_calculate.set_defaults(func=command_diff)  # function command calculate
 
     return parser
