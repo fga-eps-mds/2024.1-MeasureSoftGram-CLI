@@ -56,6 +56,17 @@ def command_extract(args):
         print_warn(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
+    label = args.get("label", None)
+
+    if label is not None and output_origin == "sonarqube":
+        logger.error(
+            'Error: The parameter "-lb" must accompany a github repository output'
+        )
+        print_warn(
+            'Error: The parameter "-lb" must accompany a github repository output'
+        )
+        sys.exit(1)
+
     if data_path is None and repository_path is None:
         logger.error(
             "It is necessary to pass the data_path or repository_path parameters"
@@ -71,7 +82,10 @@ def command_extract(args):
     parser = GenericParser()
 
     if repository_path and output_origin == "github":
-        result = parser.parse(input_value=repository_path, type_input=output_origin)
+        filters = {"labels": label if label else "US,User Story,User Stories"}
+        result = parser.parse(
+            input_value=repository_path, type_input=output_origin, filters=filters
+        )
         repository_name = repository_path.replace("/", "-")
         save_file_with_results(
             ".msgram",
