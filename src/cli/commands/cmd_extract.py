@@ -17,6 +17,7 @@ from src.cli.utils import (
     print_panel,
     print_rule,
     print_warn,
+    is_valid_date_range,
 )
 
 logger = logging.getLogger("msgram")
@@ -42,6 +43,17 @@ def get_infos_from_name(filename: str) -> str:
     return f"{file_name}-extracted.msgram"
 
 
+def check_error_accompany_github(param, value, output_origin):
+    if value is not None and output_origin == "sonarqube":
+        logger.error(
+            f'Error: The parameter "-{param}" must accompany a github repository output'
+        )
+        print_warn(
+            f'Error: The parameter "-{param}" must accompany a github repository output'
+        )
+        sys.exit(1)
+
+
 def command_extract(args):
     time_init = perf_counter()
     try:
@@ -58,13 +70,18 @@ def command_extract(args):
 
     label = args.get("label", None)
     workflows = args.get("workflows", None)
+    filter_date = args.get("filter_date", None)
 
-    if label is not None and output_origin == "sonarqube":
+    check_error_accompany_github("lb", label, output_origin)
+    check_error_accompany_github("wf", workflows, output_origin)
+    check_error_accompany_github("fd", filter_date, output_origin)
+
+    if filter_date is not None and not is_valid_date_range(filter_date):
         logger.error(
-            'Error: The parameter "-lb" must accompany a github repository output'
+            "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
         )
         print_warn(
-            'Error: The parameter "-lb" must accompany a github repository output'
+            "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
         )
         sys.exit(1)
 
@@ -77,15 +94,6 @@ def command_extract(args):
         )
         sys.exit(1)
 
-    if workflows is not None and output_origin == "sonarqube":
-        logger.error(
-            'Error: The parameter "-wf" must accompany a github repository output'
-        )
-        print_warn(
-            'Error: The parameter "-wf" must accompany a github repository output'
-        )
-        sys.exit(1)
-
     console = Console()
     console.clear()
     print_rule("Extract metrics")
@@ -93,7 +101,8 @@ def command_extract(args):
 
     if repository_path and output_origin == "github":
         filters = {"labels": label if label else "US,User Story,User Stories",
-                   "workflows": workflows if workflows else None}
+                   "workflows": workflows if workflows else None,
+                   "dates": filter_date if filter_date else None}
         result = parser.parse(
             input_value=repository_path, type_input=output_origin, filters=filters
         )
