@@ -19,7 +19,7 @@ def is_valid_date_range(date):
     if not match:
         return False
 
-    d1, m1, y1, d2, m2, y2 = [int(time) for time in re.split(r'[/\-]', date)]
+    d1, m1, y1, d2, m2, y2 = [int(time) for time in re.split(r"[/\-]", date)]
 
     try:
         since = datetime(y1, m1, d1)

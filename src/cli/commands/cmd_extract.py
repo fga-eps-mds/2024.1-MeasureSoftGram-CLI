@@ -100,9 +100,11 @@ def command_extract(args):
     parser = GenericParser()
 
     if repository_path and output_origin == "github":
-        filters = {"labels": label if label else "US,User Story,User Stories",
-                   "workflows": workflows if workflows else None,
-                   "dates": filter_date if filter_date else None}
+        filters = {
+            "labels": label if label else "US,User Story,User Stories",
+            "workflows": workflows if workflows else None,
+            "dates": filter_date if filter_date else None,
+        }
         result = parser.parse(
             input_value=repository_path, type_input=output_origin, filters=filters
         )
