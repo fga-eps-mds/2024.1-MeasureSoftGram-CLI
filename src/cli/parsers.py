@@ -103,7 +103,23 @@ def create_parser():
         type=str,
         help=(
             "Selected label name for extracted user story issues. Format 'XX YY'."
-            + " Default values, not case sensitive: 'US', 'User Story' or 'User Stories'"
+            + " Default, not case sensitive: 'US', 'User Story' or 'User Stories'"
+        ),
+    )
+
+    parser_extract.add_argument(
+        "-wf",
+        "--workflows",
+        type=list,
+        help="Selected workflow name to be considered in the CI Feedback Time extraction. Default: 'build'",
+    )
+
+    parser_extract.add_argument(
+        "-fd",
+        "--filter_date",
+        type=str,
+        help=(
+            "Filter range of dates considered on extraction, with format 'dd/mm/yyyy-dd/mm/yyyy'"
         ),
     )
 
@@ -120,13 +136,6 @@ def create_parser():
         "--repository_path",
         type=str,
         help="Path to analysis git repository",
-    )
-
-    parser_extract.add_argument(
-        "-wf",
-        "--workflows",
-        type=list,
-        help="A list of workflow names to be considered in the ci feedback time calculation",
     )
 
     parser_extract.set_defaults(func=command_extract)  # function command extract

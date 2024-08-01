@@ -114,6 +114,98 @@ def test_extract_fail_no_dp_or_rep():
     )
 
 
+def test_extract_fail_sonarqube_wf():
+    extract_dirpath = tempfile.mkdtemp()
+    args = {
+        "output_origin": "sonarqube",
+        "language_extension": "py",
+        "extracted_path": Path(extract_dirpath),
+        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
+        "workflows": "pages build and deployment",
+    }
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+    with pytest.raises(SystemExit):
+        command_extract(args)
+
+    sys.stdout = sys.__stdout__
+
+    assert (
+        'Error: The parameter "-wf" must accompany a github repository output'
+        in captured_output.getvalue()
+    )
+
+
+def test_extract_fail_sonarqube_lb():
+    extract_dirpath = tempfile.mkdtemp()
+    args = {
+        "output_origin": "sonarqube",
+        "language_extension": "py",
+        "extracted_path": Path(extract_dirpath),
+        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
+        "label": "US",
+    }
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+    with pytest.raises(SystemExit):
+        command_extract(args)
+
+    sys.stdout = sys.__stdout__
+
+    assert (
+        'Error: The parameter "-lb" must accompany a github repository output'
+        in captured_output.getvalue()
+    )
+
+
+def test_extract_fail_sonarqube_fd():
+    extract_dirpath = tempfile.mkdtemp()
+    args = {
+        "output_origin": "sonarqube",
+        "language_extension": "py",
+        "extracted_path": Path(extract_dirpath),
+        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
+        "filter_date": "20/06/2023-15/07/2023",
+    }
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+    with pytest.raises(SystemExit):
+        command_extract(args)
+
+    sys.stdout = sys.__stdout__
+
+    assert (
+        'Error: The parameter "-fd" must accompany a github repository output'
+        in captured_output.getvalue()
+    )
+
+
+def test_extract_fail_date_format():
+    extract_dirpath = tempfile.mkdtemp()
+    args = {
+        "output_origin": "github",
+        "language_extension": "py",
+        "extracted_path": Path(extract_dirpath),
+        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
+        "filter_date": "20/06/2023-15/07/2021",
+    }
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+    with pytest.raises(SystemExit):
+        command_extract(args)
+
+    sys.stdout = sys.__stdout__
+
+    assert (
+        "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
+        in captured_output.getvalue()
+    )
+
+
 def test_extract_directory_not_exist():
     args = {
         "output_origin": "sonarqube",

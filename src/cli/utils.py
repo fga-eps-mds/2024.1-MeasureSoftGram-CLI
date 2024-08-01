@@ -1,4 +1,6 @@
 import logging
+import re
+from datetime import datetime
 
 from rich import box, print
 from rich.console import Console
@@ -8,6 +10,24 @@ from rich.table import Table
 
 logger = logging.getLogger("msgram")
 console = Console(highlight=False, soft_wrap=False, width=140)
+
+DATE_PATTERN = r"^\d{2}/\d{2}/\d{4}-\d{2}/\d{2}/\d{4}$"
+
+
+def is_valid_date_range(date):
+    match = re.match(DATE_PATTERN, date)
+    if not match:
+        return False
+
+    d1, m1, y1, d2, m2, y2 = [int(time) for time in re.split(r"[/\-]", date)]
+
+    try:
+        since = datetime(y1, m1, d1)
+        until = datetime(y2, m2, d2)
+    except ValueError:
+        return False
+
+    return since <= until
 
 
 def print_info(text: str):
