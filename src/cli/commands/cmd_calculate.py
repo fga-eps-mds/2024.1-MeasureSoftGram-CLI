@@ -18,7 +18,7 @@ from src.cli.resources.subcharacteristic import calculate_subcharacteristics
 from src.cli.utils import print_error, print_info, print_panel, print_rule, print_table
 from src.cli.aggregate_metrics import aggregate_metrics
 from src.cli.exceptions import exceptions
-from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG
+from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG_GITHUB, FILE_CONFIG_SONARQUBE
 
 logger = logging.getLogger("msgram")
 
@@ -34,11 +34,14 @@ def read_config_file(config_path):
         exit(1)
 
 
-def calculate_metrics(extracted_path, config):
+def calculate_metrics(input_format, extracted_path, config):
     data_calculated = []
 
+    print('teste: ', extracted_path)
+    print('format: ', input_format)
+
     if not extracted_path.is_file():
-        if not aggregate_metrics(extracted_path, config):
+        if not aggregate_metrics(input_format, extracted_path, config):
             print_error(
                 "> [red] Failed to aggregate metrics, calculate was not performed. \n"
             )
@@ -63,6 +66,7 @@ def calculate_metrics(extracted_path, config):
 def command_calculate(args):
     try:
         output_format: str = args["output_format"]
+        input_format: str = args["input_format"]
         config_path = args["config_path"]
         extracted_path = args["extracted_path"]
 
@@ -80,7 +84,7 @@ def command_calculate(args):
 
     print_info("\n> [blue] Reading extracted files:[/]")
 
-    data_calculated, success = calculate_metrics(extracted_path, config)
+    data_calculated, success = calculate_metrics(input_format, extracted_path, config)
 
     if success:
         print_info("\n[#A9A9A9]All calculations performed[/] successfully!")

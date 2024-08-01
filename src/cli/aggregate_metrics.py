@@ -170,7 +170,7 @@ def find_common_part(sonar_filename, github_result):
     return False
 
 
-def aggregate_metrics(folder_path, config: json):
+def aggregate_metrics(input_format, folder_path, config: json):
     msgram_files = list_msgram_files(folder_path)
 
     if not msgram_files:
@@ -188,7 +188,7 @@ def aggregate_metrics(folder_path, config: json):
 
     config_has_github = should_process_github_metrics(config)
 
-    if config_has_github:
+    if config_has_github and input_format == "github":
         github_result = process_github_metrics(folder_path, github_files, metrics)
 
         if not github_result:
@@ -196,8 +196,7 @@ def aggregate_metrics(folder_path, config: json):
             return False
 
         have_metrics = True
-
-    if should_process_sonar_metrics(config):
+    if should_process_sonar_metrics(config) and input_format == "sonarqube":
         sonar_result = process_sonar_metrics(folder_path, msgram_files, github_files)
 
         if not sonar_result:
@@ -206,9 +205,14 @@ def aggregate_metrics(folder_path, config: json):
 
         have_metrics = True
 
+    print(len(github_result), len(sonar_result))
+
     if not have_metrics:
-        print_error("> [red]Error: No metrics where found in the .msgram files")
+        print_error(f"> [red]Error: No metrics where found in the .msgram files from the type: {input_format}")
         return False
+
+
+
 
     for sonar_filename, file_content in sonar_result:
         github_metrics = find_common_part(sonar_filename, github_result)

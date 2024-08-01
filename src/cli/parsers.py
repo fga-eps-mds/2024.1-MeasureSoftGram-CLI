@@ -171,6 +171,15 @@ def create_parser():
     )
 
     parser_calculate.add_argument(
+        "-in",
+        "--input_format",
+        type=str,
+        choices=AVAILABLE_IMPORTS,
+        default="sonarqube",
+        help=("The type of the input (extracted) values is:".join(AVAILABLE_IMPORTS)),
+    )
+
+    parser_calculate.add_argument(
         "-o",
         "--output_format",
         type=str,
