@@ -110,7 +110,7 @@ def create_parser():
     parser_extract.add_argument(
         "-wf",
         "--workflows",
-        type=list,
+        type=str,
         help="Selected workflow name to be considered in the CI Feedback Time extraction. Default: 'build'",
     )
 
