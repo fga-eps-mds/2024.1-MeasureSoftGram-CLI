@@ -23,12 +23,13 @@ from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG_GITHUB, FILE_CO
 logger = logging.getLogger("msgram")
 
 
-def read_config_file(config_path):
+def read_config_file(input_format, config_path):
     try:
-        return open_json_file(config_path / FILE_CONFIG)
+        config = FILE_CONFIG_SONARQUBE if input_format == "sonarqube" else FILE_CONFIG_GITHUB
+        return open_json_file(config_path / config)
     except exceptions.MeasureSoftGramCLIException as e:
         print_error(
-            f"[red]Error reading msgram.json config file in {config_path}: {e}\n"
+            f"[red]Error reading {config} config file in {config_path}: {e}\n"
         )
         print_rule()
         exit(1)
@@ -47,6 +48,7 @@ def calculate_metrics(input_format, extracted_path, config):
             )
             return data_calculated, False
 
+        print('passed\n\n\n')
         for file, file_name in read_multiple_files(extracted_path, "metrics"):
             result = calculate_all(file, file_name, config)
             data_calculated.append(result)
@@ -80,7 +82,7 @@ def command_calculate(args):
     print_rule("Calculate")
     print_info("> [blue] Reading config file:[/]")
 
-    config = read_config_file(config_path)
+    config = read_config_file(input_format, config_path)
 
     print_info("\n> [blue] Reading extracted files:[/]")
 
