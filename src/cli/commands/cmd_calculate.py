@@ -38,9 +38,6 @@ def read_config_file(input_format, config_path):
 def calculate_metrics(input_format, extracted_path, config):
     data_calculated = []
 
-    print('teste: ', extracted_path)
-    print('format: ', input_format)
-
     if not extracted_path.is_file():
         if not aggregate_metrics(input_format, extracted_path, config):
             print_error(
@@ -48,14 +45,17 @@ def calculate_metrics(input_format, extracted_path, config):
             )
             return data_calculated, False
 
-        print('passed\n\n\n')
-        for file, file_name in read_multiple_files(extracted_path, "metrics"):
+        for file, file_name in read_multiple_files(extracted_path, input_format, "metrics"):
+            if file_name.startswith("github_"):
+                file_name = file_name[len("github_"):]
             result = calculate_all(file, file_name, config)
             data_calculated.append(result)
 
         return data_calculated, True
     else:
         try:
+            if extracted_path.name.startswith("github_"):
+                extracted_path.name = extracted_path.name[len("github_"):]
             result = calculate_all(
                 open_json_file(extracted_path), extracted_path.name, config
             )

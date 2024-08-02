@@ -173,6 +173,7 @@ def create_parser():
     parser_calculate.add_argument(
         "-in",
         "--input_format",
+        required=True,
         type=str,
         choices=AVAILABLE_IMPORTS,
         default="sonarqube",
