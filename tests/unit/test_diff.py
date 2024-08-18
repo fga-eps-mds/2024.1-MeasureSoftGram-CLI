@@ -13,14 +13,12 @@ from src.cli.commands.cmd_diff import command_diff
 
 CALCULATE_ARGS = {
     "output_format": "json",
-    "config_path": Path(""),
-    "extracted_calculation": Path(""),
+    "rp_path": Path(""),
+    "rd_path": Path(""),
 }
 
 
-@pytest.mark.parametrize(
-    "diff_arg", ["output_format", "config_path", "extracted_calculation"]
-)
+@pytest.mark.parametrize("diff_arg", ["output_format", "rp_path", "rd_path"])
 def test_diff_invalid_args(diff_arg):
     captured_output = StringIO()
     sys.stdout = captured_output
@@ -55,8 +53,8 @@ def test_diff_file():
 
     args = {
         "output_format": "json",
-        "config_path": Path(config_dirpath),
-        "extracted_calculation": Path(config_dirpath + "/calc_msgram_diff.json"),
+        "rp_path": Path(config_dirpath + "/msgram_diff.json"),
+        "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
     }
 
     command_diff(args)
@@ -84,8 +82,8 @@ def test_diff_invalid_config_file():
 
     args = {
         "output_format": "csv",
-        "config_path": Path(config_dirpath),
-        "extracted_calculation": Path(config_dirpath + "/calc_msgram_diff.json"),
+        "rp_path": Path(config_dirpath + "/msgram_diff.json"),
+        "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
     }
 
     with pytest.raises(SystemExit):
@@ -93,8 +91,7 @@ def test_diff_invalid_config_file():
 
     sys.stdout = sys.__stdout__
     assert (
-        f"Error reading msgram_diff.json config file in {config_dirpath}"
-        in captured_output.getvalue()
+        f"Error reading config file in {config_dirpath}" in captured_output.getvalue()
     )
 
     shutil.rmtree(config_dirpath)
@@ -112,8 +109,8 @@ def test_diff_invalid_calculated_file():
 
     args = {
         "output_format": "csv",
-        "config_path": Path(config_dirpath),
-        "extracted_calculation": Path(config_dirpath + "/calc_msgram_error.json"),
+        "rp_path": Path(config_dirpath + "/msgram_diff.json"),
+        "rd_path": Path(config_dirpath + "/calc_msgram_error.json"),
     }
 
     with pytest.raises(SystemExit):
@@ -145,8 +142,8 @@ def test_diff_invalid_vectors_size():
 
     args = {
         "output_format": "csv",
-        "config_path": Path(config_dirpath),
-        "extracted_calculation": Path(config_dirpath + "/calc_msgram_diff.json"),
+        "rp_path": Path(config_dirpath + "/msgram_diff.json"),
+        "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
     }
 
     command_diff(args)
@@ -177,8 +174,8 @@ def test_diff_differents_characteristics():
 
     args = {
         "output_format": "csv",
-        "config_path": Path(config_dirpath),
-        "extracted_calculation": Path(config_dirpath + "/calc_msgram_diff.json"),
+        "rp_path": Path(config_dirpath + "/msgram_diff.json"),
+        "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
     }
 
     command_diff(args)
@@ -190,37 +187,3 @@ def test_diff_differents_characteristics():
     )
 
     shutil.rmtree(config_dirpath)
-
-
-# def test_calculate_invalid_extracted_file():
-#     captured_output = StringIO()
-#     sys.stdout = captured_output
-
-#     config_dirpath = tempfile.mkdtemp()
-#     extract_dirpath = tempfile.mkdtemp()
-
-#     shutil.copy("tests/unit/data/msgram.json", f"{config_dirpath}/msgram.json")
-
-#     extracted_file_name = "invalid_json.json"
-#     shutil.copy(
-#         f"tests/unit/data/{extracted_file_name}",
-#         f"{extract_dirpath}/{extracted_file_name}",
-#     )
-
-#     args = {
-#         "output_format": "csv",
-#         "config_path": Path(config_dirpath),
-#         "extracted_path": Path(extract_dirpath + f"/{extracted_file_name}"),
-#     }
-
-#     command_calculate(args)
-
-#     sys.stdout = sys.__stdout__
-#     assert (
-#         f"Error calculating {extract_dirpath}/{extracted_file_name}"
-#         in captured_output.getvalue()
-#     )
-#     assert "All calculations performed" not in captured_output.getvalue()
-
-#     shutil.rmtree(config_dirpath)
-#     shutil.rmtree(extract_dirpath)
