@@ -214,14 +214,16 @@ def create_parser():
         "-rd",
         "--rd_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the .json file with the model-calculated values for a release's quality characteristics observed/developed.",
+        help="Path to the .json file with the model-calculated values for a release's quality"
+        "characteristics observed/developed.",
     )
 
     parser_calculate.add_argument(
         "-rp",
         "--rp_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the .json file with the planned/wished values for the quality characteristics of a release. Quality requirements goals for a release.",
+        help="Path to the .json file with the planned/wished values for the quality characteristics"
+        "of a release. Quality requirements goals for a release.",
     )
 
     parser_calculate.add_argument(

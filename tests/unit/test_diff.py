@@ -146,7 +146,8 @@ def test_diff_invalid_vectors_size():
         "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
     }
 
-    command_diff(args)
+    with pytest.raises(SystemExit):
+        command_diff(args)
 
     sys.stdout = sys.__stdout__
     assert (
@@ -178,7 +179,8 @@ def test_diff_differents_characteristics():
         "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
     }
 
-    command_diff(args)
+    with pytest.raises(SystemExit):
+        command_diff(args)
 
     sys.stdout = sys.__stdout__
     assert (

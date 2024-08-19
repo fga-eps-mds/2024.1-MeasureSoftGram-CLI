@@ -17,7 +17,7 @@ from src.cli.utils import (
     print_rule,
 )
 from src.cli.exceptions import exceptions
-from src.config.settings import DEFAULT_CONFIG_PATH, DIFF_FILE_CONFIG
+from src.config.settings import DEFAULT_CONFIG_PATH
 
 logger = logging.getLogger("msgram")
 
