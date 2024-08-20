@@ -18,14 +18,14 @@ from src.cli.resources.subcharacteristic import calculate_subcharacteristics
 from src.cli.utils import print_error, print_info, print_panel, print_rule, print_table
 from src.cli.aggregate_metrics import aggregate_metrics
 from src.cli.exceptions import exceptions
-from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG_GITHUB, FILE_CONFIG_SONARQUBE
+from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG
 
 logger = logging.getLogger("msgram")
 
 
-def read_config_file(input_format, config_path):
+def read_config_file(config_path):
     try:
-        config = FILE_CONFIG_SONARQUBE if input_format == "sonarqube" else FILE_CONFIG_GITHUB
+        config = FILE_CONFIG
         return open_json_file(config_path / config)
     except exceptions.MeasureSoftGramCLIException as e:
         print_error(
@@ -82,7 +82,7 @@ def command_calculate(args):
     print_rule("Calculate")
     print_info("> [blue] Reading config file:[/]")
 
-    config = read_config_file(input_format, config_path)
+    config = read_config_file(config_path)
 
     print_info("\n> [blue] Reading extracted files:[/]")
 

@@ -1,7 +1,5 @@
 from pathlib import Path
 
-FILE_CONFIG_SONARQUBE = "msgram_sonarqube.json"
-FILE_CONFIG_GITHUB = "msgram_github.json"
 FILE_CONFIG = "msgram.json"
 DEFAULT_CONFIG_PATH = Path.cwd() / ".msgram"
 DEFAULT_RAW_DATA_PATH = Path.cwd() / "analytics-raw-data"

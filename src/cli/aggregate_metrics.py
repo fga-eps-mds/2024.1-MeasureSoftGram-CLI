@@ -37,11 +37,11 @@ measures["sonarqube"] = [
 measures["github"] = ["team_throughput", "ci_feedback_time"]
 
 
-def should_process_metrics(input_format, config):
+def should_process_metrics(config):
     for characteristic in config.get("characteristics", []):
         for subcharacteristic in characteristic.get("subcharacteristics", []):
             for measure in subcharacteristic.get("measures", []):
-                if measure.get("key") not in measures[input_format]:
+                if measure.get("key") not in measures["sonarqube"] and measure.get("key") not in measures["github"]:
                     return False
     return True
 
@@ -118,30 +118,17 @@ def aggregate_metrics(input_format, folder_path, config: json):
 
     have_metrics = False
 
-    if input_format == "github":
-        if should_process_metrics(input_format, config):
-            result = process_metrics(folder_path, github_files)
+    if should_process_metrics(config):
+        result = process_metrics(folder_path, github_files if input_format == "github" else sonar_files)
 
-            if not result:
-                print_error("> [red]Error: Unexpected result from process_github_metrics")
-                return False
-
-            have_metrics = True
-        else:
-            print_error("> [red]Error: Unexpected measures from should_process_metrics")
+        if not result:
+            print_error("> [red]Error: Unexpected result from process_github_metrics")
             return False
-    if input_format == "sonarqube":
-        if should_process_metrics(input_format, config):
-            result = process_metrics(folder_path, sonar_files)
 
-            if not result:
-                print_error("> [red]Error: Unexpected result from process_sonar_metrics")
-                return False
-
-            have_metrics = True
-        else:
-            print_error("> [red]Error: Unexpected measures from should_process_metrics")
-            return False
+        have_metrics = True
+    else:
+        print_error("> [red]Error: Unexpected measures from should_process_metrics")
+        return False
 
     if not have_metrics:
         print_error(f"> [red]Error: No metrics where found in the .msgram files from the type: {input_format}")
