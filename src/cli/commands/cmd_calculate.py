@@ -54,11 +54,10 @@ def calculate_metrics(input_format, extracted_path, config):
         return data_calculated, True
     else:
         try:
+            file_name = extracted_path.name
             if extracted_path.name.startswith("github_"):
-                extracted_path.name = extracted_path.name[len("github_") :]
-            result = calculate_all(
-                open_json_file(extracted_path), extracted_path.name, config
-            )
+                file_name = file_name[len("github_") :]
+            result = calculate_all(open_json_file(extracted_path), file_name, config)
             return result, True
         except exceptions.MeasureSoftGramCLIException as e:
             print_error(f"[red]Error calculating {extracted_path}: {e}\n")
