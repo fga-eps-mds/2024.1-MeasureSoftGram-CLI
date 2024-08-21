@@ -132,6 +132,11 @@ def command_extract(args):
     logger.debug(f"extracted_path: {extracted_path}")
 
     files = list(data_path.glob("*.json"))
+
+    if not files:
+        print_warn(f"No JSON files found in the specified data_path: {data_path}\n")
+        sys.exit(1)
+
     valid_files = len(files)
 
     print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
