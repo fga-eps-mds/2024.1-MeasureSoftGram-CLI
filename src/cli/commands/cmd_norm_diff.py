@@ -53,7 +53,7 @@ def command_norm_diff(args):
     planned_data = read_planned_file(rp_path, sort_key="key")
     calculated_data = read_calculated_file(rd_path)
 
-    planned_vector, calculated_vector = extract_values(planned_data, calculated_data)
+    planned_vector, calculated_vector = extract_values(planned_data, calculated_data, rp_path, rd_path)
     norm_diff_value = norm_diff(planned_vector, calculated_vector)
 
     print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]\n")
@@ -62,7 +62,7 @@ def command_norm_diff(args):
     print_rule()
 
 
-def extract_values(planned_data, calculated_data):
+def extract_values(planned_data, calculated_data, rp_path, rd_path):
     try:
         planned = planned_data
         calculated = []
@@ -86,6 +86,18 @@ def extract_values(planned_data, calculated_data):
         planned_values = [planned_dict[key] for key in planned_keys]
         calculated_values = [calculated_dict[key] for key in planned_keys]
 
+        for value in planned_values:
+            if value > 1:
+                print_error(f"[red]The values informed in the .json file {rp_path} must be between 0 and 1.\n")
+                print_rule()
+                exit(1)
+
+        for value in calculated_values:
+            if value > 1:
+                print_error(f"[red]The values informed in the .json file {rd_path} must be between 0 and 1.\n")
+                print_rule()
+                exit(1)
+    
         return (np.array(planned_values), np.array(calculated_values))
     except exceptions.MeasureSoftGramCLIException as e:
         print_error(f"[red]Error extracting values: {e}\n")
