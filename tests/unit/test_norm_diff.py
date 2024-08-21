@@ -131,3 +131,52 @@ def test_missmatch_values():
 
     assert excinfo.value.code == 1
     assert "Error extracting values" in output
+
+def test_planned_value_bigger_than_one():
+    config_dirpath = tempfile.mkdtemp()
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+
+    shutil.copy("tests/unit/data/planned-bigger-value.json", f"{config_dirpath}/planned-bigger-value.json")
+    shutil.copy("tests/unit/data/calculated.json", f"{config_dirpath}/calculated.json")
+
+    with pytest.raises(SystemExit) as excinfo:
+        command_norm_diff(
+            {
+                "rp_path": Path(config_dirpath) / "planned-bigger-value.json",
+                "rd_path": Path(config_dirpath) / "calculated.json",
+            }
+        )
+
+    sys.stdout = sys.__stdout__
+
+    output = captured_output.getvalue()
+
+    assert excinfo.value.code == 1
+    assert "The values informed in the .json" in output
+
+
+def test_developed_value_bigger_than_one():
+    config_dirpath = tempfile.mkdtemp()
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+
+    shutil.copy("tests/unit/data/planned.json", f"{config_dirpath}/planned.json")
+    shutil.copy("tests/unit/data/calculated-bigger-value.json", f"{config_dirpath}/calculated-bigger-value.json")
+
+    with pytest.raises(SystemExit) as excinfo:
+        command_norm_diff(
+            {
+                "rp_path": Path(config_dirpath) / "planned.json",
+                "rd_path": Path(config_dirpath) / "calculated-bigger-value.json",
+            }
+        )
+
+    sys.stdout = sys.__stdout__
+
+    output = captured_output.getvalue()
+
+    assert excinfo.value.code == 1
+    assert "The values informed in the .json" in output
