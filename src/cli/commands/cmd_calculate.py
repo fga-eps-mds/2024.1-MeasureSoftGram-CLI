@@ -27,7 +27,9 @@ def read_config_file(config_path):
     try:
         return open_json_file(config_path / FILE_CONFIG)
     except exceptions.MeasureSoftGramCLIException as e:
-        print_error(f"[red]Error reading config file in {config_path}: {e}\n")
+        print_error(
+            f"[red]Error reading msgram.json config file in {config_path}: {e}\n"
+        )
         print_rule()
         exit(1)
 
