@@ -34,26 +34,31 @@ def read_config_file(config_path):
         exit(1)
 
 
-def calculate_metrics(extracted_path, config):
+def calculate_metrics(input_format, extracted_path, config):
     data_calculated = []
 
     if not extracted_path.is_file():
-        if not aggregate_metrics(extracted_path, config):
+        if not aggregate_metrics(input_format, extracted_path, config):
             print_error(
                 "> [red] Failed to aggregate metrics, calculate was not performed. \n"
             )
             return data_calculated, False
 
-        for file, file_name in read_multiple_files(extracted_path, "metrics"):
+        for file, file_name in read_multiple_files(
+            extracted_path, input_format, "metrics"
+        ):
+            if file_name.startswith("github_"):
+                file_name = file_name[len("github_") :]
             result = calculate_all(file, file_name, config)
             data_calculated.append(result)
 
         return data_calculated, True
     else:
         try:
-            result = calculate_all(
-                open_json_file(extracted_path), extracted_path.name, config
-            )
+            file_name = extracted_path.name
+            if extracted_path.name.startswith("github_"):
+                file_name = file_name[len("github_") :]
+            result = calculate_all(open_json_file(extracted_path), file_name, config)
             return result, True
         except exceptions.MeasureSoftGramCLIException as e:
             print_error(f"[red]Error calculating {extracted_path}: {e}\n")
@@ -63,6 +68,7 @@ def calculate_metrics(extracted_path, config):
 def command_calculate(args):
     try:
         output_format: str = args["output_format"]
+        input_format: str = args["input_format"]
         config_path = args["config_path"]
         extracted_path = args["extracted_path"]
 
@@ -80,7 +86,7 @@ def command_calculate(args):
 
     print_info("\n> [blue] Reading extracted files:[/]")
 
-    data_calculated, success = calculate_metrics(extracted_path, config)
+    data_calculated, success = calculate_metrics(input_format, extracted_path, config)
 
     if success:
         print_info("\n[#A9A9A9]All calculations performed[/] successfully!")

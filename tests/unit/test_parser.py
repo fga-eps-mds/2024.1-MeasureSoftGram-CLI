@@ -76,6 +76,8 @@ def test_parser_calculate():
             "/path/to/config",
             "-o",
             "csv",
+            "-in",
+            "github",
         ]
     )
     assert args.func == command_calculate
