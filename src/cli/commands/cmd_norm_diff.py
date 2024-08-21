@@ -43,15 +43,15 @@ def read_calculated_file(file_path):
 
 def command_norm_diff(args):
     try:
-        planned_path = args["planned_path"]
-        calculated_path = args["calculated_path"]
+        rp_path = args["rp_path"]
+        rd_path = args["rd_path"]
     except KeyError as e:
         logger.error(f"KeyError: args[{e}] - non-existent parameters")
         print_error(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
-    planned_data = read_planned_file(planned_path, sort_key="key")
-    calculated_data = read_calculated_file(calculated_path)
+    planned_data = read_planned_file(rp_path, sort_key="key")
+    calculated_data = read_calculated_file(rd_path)
 
     planned_vector, calculated_vector = extract_values(planned_data, calculated_data)
     norm_diff_value = norm_diff(planned_vector, calculated_vector)

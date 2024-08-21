@@ -19,8 +19,8 @@ def test_norm_diff():
 
     command_norm_diff(
         {
-            "planned_path": Path(config_dirpath) / "planned.json",
-            "calculated_path": Path(config_dirpath) / "calculated.json",
+            "rp_path": Path(config_dirpath) / "planned.json",
+            "rd_path": Path(config_dirpath) / "calculated.json",
         }
     )
 
@@ -45,7 +45,7 @@ def test_missing_args():
     shutil.copy("tests/unit/data/calculated.json", f"{config_dirpath}/calculated.json")
 
     with pytest.raises(SystemExit) as excinfo:
-        command_norm_diff({"planned_path": Path(config_dirpath) / "planned.json"})
+        command_norm_diff({"rp_path": Path(config_dirpath) / "planned.json"})
 
     sys.stdout = sys.__stdout__
 
@@ -67,8 +67,8 @@ def test_invalid_calculated_file():
     with pytest.raises(SystemExit) as excinfo:
         command_norm_diff(
             {
-                "planned_path": Path(config_dirpath) / "planned.json",
-                "calculated_path": Path(config_dirpath) / "invalid.json",
+                "rp_path": Path(config_dirpath) / "planned.json",
+                "rd_path": Path(config_dirpath) / "invalid.json",
             }
         )
 
@@ -92,8 +92,8 @@ def test_invalid_planned_file():
     with pytest.raises(SystemExit) as excinfo:
         command_norm_diff(
             {
-                "planned_path": Path(config_dirpath) / "invalid.json",
-                "calculated_path": Path(config_dirpath) / "calculated.json",
+                "rp_path": Path(config_dirpath) / "invalid.json",
+                "rd_path": Path(config_dirpath) / "calculated.json",
             }
         )
 
@@ -120,8 +120,8 @@ def test_missmatch_values():
     with pytest.raises(SystemExit) as excinfo:
         command_norm_diff(
             {
-                "planned_path": Path(config_dirpath) / "missmatch-planned.json",
-                "calculated_path": Path(config_dirpath) / "calculated.json",
+                "rp_path": Path(config_dirpath) / "missmatch-planned.json",
+                "rd_path": Path(config_dirpath) / "calculated.json",
             }
         )
 
