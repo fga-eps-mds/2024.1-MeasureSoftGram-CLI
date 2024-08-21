@@ -25,10 +25,9 @@ logger = logging.getLogger("msgram")
 
 def read_config_file(config_path):
     try:
-        config = FILE_CONFIG
-        return open_json_file(config_path / config)
+        return open_json_file(config_path / FILE_CONFIG)
     except exceptions.MeasureSoftGramCLIException as e:
-        print_error(f"[red]Error reading {config} config file in {config_path}: {e}\n")
+        print_error(f"[red]Error reading config file in {config_path}: {e}\n")
         print_rule()
         exit(1)
 

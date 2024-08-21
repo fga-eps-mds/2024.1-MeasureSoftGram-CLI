@@ -22,7 +22,6 @@ def get_measure_value(measures, subchar):
                 }
             )
 
-    # print('calculated: ', measures_calculated)
     return measures_calculated
 
 
