@@ -57,7 +57,7 @@ def command_norm_diff(args):
     norm_diff_value = norm_diff(planned_vector, calculated_vector)
 
     print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]")
-    print_info("[#A9A9A9]For more detailed informations use 'diff' command.[/]")
+    print_info("[#A9A9A9]For more detailed information use 'diff' command.[/]\n")
     print(f"Norm Diff: {norm_diff_value}")
     print_rule()
 
