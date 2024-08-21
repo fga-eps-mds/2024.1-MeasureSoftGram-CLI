@@ -87,13 +87,13 @@ def extract_values(planned_data, calculated_data, rp_path, rd_path):
         calculated_values = [calculated_dict[key] for key in planned_keys]
 
         for value in planned_values:
-            if value > 1:
+            if value > 1 or value < 0:
                 print_error(f"[red]The values informed in the .json file {rp_path} must be between 0 and 1.\n")
                 print_rule()
                 exit(1)
 
         for value in calculated_values:
-            if value > 1:
+            if value > 1 or value < 0:
                 print_error(f"[red]The values informed in the .json file {rd_path} must be between 0 and 1.\n")
                 print_rule()
                 exit(1)
