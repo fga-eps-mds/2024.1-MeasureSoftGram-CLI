@@ -195,24 +195,26 @@ def create_parser():
     )
     parser_calculate.set_defaults(func=command_calculate)  # function command calculate
 
-    # =====================================< COMMAND norm-diff >=====================================
+    # =====================================< COMMAND norm_diff >=====================================
     parser_norm_diff = subparsers.add_parser(
-        "norm-diff",
+        "norm_diff",
         help="Calculate the norm difference between the planned metrics and the developed.",
     )
 
     parser_norm_diff.add_argument(
-        "-p",
-        "--planned_path",
+        "-rp",
+        "--rp_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the json with the planned metrics.",
+        help="Path to the .json file with the planned/wished values ​​for the quality "
+        "characteristics of a release. Quality requirements goals for a release.",
     )
 
     parser_norm_diff.add_argument(
-        "-c",
-        "--calculated_path",
+        "-rd",
+        "--rd_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the json with the calculated metrics.",
+        help="Path to the .json file with the model-calculated values ​​for a release's "
+        "quality characteristics observed/developed.",
     )
 
     parser_norm_diff.set_defaults(

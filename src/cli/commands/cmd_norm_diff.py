@@ -43,26 +43,38 @@ def read_calculated_file(file_path):
 
 def command_norm_diff(args):
     try:
-        planned_path = args["planned_path"]
-        calculated_path = args["calculated_path"]
+        rp_path = args["rp_path"]
+        rd_path = args["rd_path"]
     except KeyError as e:
         logger.error(f"KeyError: args[{e}] - non-existent parameters")
         print_error(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
-    planned_data = read_planned_file(planned_path, sort_key="key")
-    calculated_data = read_calculated_file(calculated_path)
+    planned_data = read_planned_file(rp_path, sort_key="key")
+    calculated_data = read_calculated_file(rd_path)
 
-    planned_vector, calculated_vector = extract_values(planned_data, calculated_data)
+    planned_vector, calculated_vector = extract_values(
+        planned_data, calculated_data, rp_path, rd_path
+    )
     norm_diff_value = norm_diff(planned_vector, calculated_vector)
 
-    print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]")
-    print_info("[#A9A9A9]For more detailed informations use 'diff' command.[/]")
+    print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]\n")
+
+    print_info(
+        "[#A9A9A9]The norm_diff value indicates the difference between the observed "
+        "quality (Rd) and the planned target (Rp). A norm_diff of 0 means that the "
+        "observed quality perfectly aligns with the planned target. If norm_diff is "
+        "not equal to 0, it shows a deviation from the target. In this case, you "
+        "should determine whether the performance is above or below the planned "
+        "quality. For a detailed analysis of these differences, use the msgram diff "
+        "command.[/]\n"
+    )
+
     print(f"Norm Diff: {norm_diff_value}")
     print_rule()
 
 
-def extract_values(planned_data, calculated_data):
+def extract_values(planned_data, calculated_data, rp_path, rd_path):
     try:
         planned = planned_data
         calculated = []
@@ -85,6 +97,22 @@ def extract_values(planned_data, calculated_data):
 
         planned_values = [planned_dict[key] for key in planned_keys]
         calculated_values = [calculated_dict[key] for key in planned_keys]
+
+        for value in planned_values:
+            if value > 1 or value < 0:
+                print_error(
+                    f"[red]The values informed in the .json file {rp_path} must be between 0 and 1.\n"
+                )
+                print_rule()
+                exit(1)
+
+        for value in calculated_values:
+            if value > 1 or value < 0:
+                print_error(
+                    f"[red]The values informed in the .json file {rd_path} must be between 0 and 1.\n"
+                )
+                print_rule()
+                exit(1)
 
         return (np.array(planned_values), np.array(calculated_values))
     except exceptions.MeasureSoftGramCLIException as e:
