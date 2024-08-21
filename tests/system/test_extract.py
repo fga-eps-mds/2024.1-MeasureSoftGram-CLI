@@ -15,7 +15,7 @@ def capture(command):
 
 def test_extract_metrics_folder_not_found_exception_handling():
     config_dirpath = tempfile.mkdtemp()
-    _, err, returncode = capture(
+    msg, _, returncode = capture(
         [
             "msgram",
             "extract",
@@ -29,8 +29,8 @@ def test_extract_metrics_folder_not_found_exception_handling():
     )
 
     assert returncode == 1
-    message = "src.cli.exceptions.exceptions.MeasureSoftGramCLIException: No files .json found inside folder."
-    assert message in err.decode("utf-8")
+    message = "No JSON files found in the specified data_path:"
+    assert message in msg.decode("utf-8")
     shutil.rmtree(config_dirpath)
 
 
