@@ -29,7 +29,7 @@ def test_norm_diff():
     output = captured_output.getvalue()
 
     assert "Norm diff calculation performed successfully!" in output
-    assert "For more detailed informations use 'diff' command." in output
+    assert "The norm_diff value indicates the difference between the observed quality (Rd) and the planned target (Rp)." in output
 
     norm_diff_value = float(output.split("Norm Diff:")[1].split("\n")[0].strip())
     assert norm_diff_value == 0.24323122001478284

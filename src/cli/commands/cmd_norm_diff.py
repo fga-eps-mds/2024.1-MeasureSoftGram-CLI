@@ -56,8 +56,8 @@ def command_norm_diff(args):
     planned_vector, calculated_vector = extract_values(planned_data, calculated_data)
     norm_diff_value = norm_diff(planned_vector, calculated_vector)
 
-    print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]")
-    print_info("[#A9A9A9]For more detailed information use 'diff' command.[/]\n")
+    print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]\n")
+    print_info("[#A9A9A9]The norm_diff value indicates the difference between the observed quality (Rd) and the planned target (Rp). A norm_diff of 0 means that the observed quality perfectly aligns with the planned target. If norm_diff is not equal to 0, it shows a deviation from the target. In this case, you should determine whether the performance is above or below the planned quality. For a detailed analysis of these differences, use the msgram diff command.[/]\n")
     print(f"Norm Diff: {norm_diff_value}")
     print_rule()
 
