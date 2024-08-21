@@ -177,7 +177,9 @@ def create_parser():
         type=str,
         choices=AVAILABLE_IMPORTS,
         default="sonarqube",
-        help=("Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)),
+        help=(
+            "Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
+        ),
     )
 
     parser_calculate.add_argument(
@@ -186,7 +188,10 @@ def create_parser():
         type=str,
         choices=AVAILABLE_GEN_FORMATS,
         default="csv",
-        help=("The format of the output (export) values are: " + ", ".join(SUPPORTED_FORMATS)),
+        help=(
+            "The format of the output (export) values are: "
+            + ", ".join(SUPPORTED_FORMATS)
+        ),
     )
     parser_calculate.set_defaults(func=command_calculate)  # function command calculate
 
@@ -241,7 +246,10 @@ def create_parser():
         type=str,
         choices=AVAILABLE_GEN_FORMATS,
         default="json",
-        help=("The format of the output (export) values are: " + ", ".join(SUPPORTED_FORMATS)),
+        help=(
+            "The format of the output (export) values are: "
+            + ", ".join(SUPPORTED_FORMATS)
+        ),
     )
     parser_calculate.set_defaults(func=command_diff)  # function command calculate
 

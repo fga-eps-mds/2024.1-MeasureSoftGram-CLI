@@ -2,7 +2,6 @@ import pytest
 import json
 import os
 import tempfile
-from unittest.mock import patch
 
 from src.cli.aggregate_metrics import (
     should_process_metrics,
