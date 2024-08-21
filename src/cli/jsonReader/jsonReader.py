@@ -36,7 +36,7 @@ def read_multiple_files(directory: Path, format: str, pattern: str):
         glob_pattern = f"[!github_]*.{pattern}"
     else:
         glob_pattern = f"*.{pattern}"
-    
+
     for path_file in directory.glob(glob_pattern):
         try:
             yield open_json_file(path_file), path_file.name

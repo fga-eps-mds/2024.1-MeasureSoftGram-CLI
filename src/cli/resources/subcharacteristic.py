@@ -34,7 +34,7 @@ def calculate_subcharacteristics(config, measures):
                     "key": subchar["key"],
                     "measures": get_measure_value(measures, subchar["measures"]),
                 }
-                if(len(subchar_info["measures"])>0):
+                if len(subchar_info["measures"]) > 0:
                     calculate_infos.append(subchar_info)
 
     headers = ["Id", "Name", "Description", "Value", "Created at"]

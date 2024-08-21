@@ -28,9 +28,7 @@ def read_config_file(config_path):
         config = FILE_CONFIG
         return open_json_file(config_path / config)
     except exceptions.MeasureSoftGramCLIException as e:
-        print_error(
-            f"[red]Error reading {config} config file in {config_path}: {e}\n"
-        )
+        print_error(f"[red]Error reading {config} config file in {config_path}: {e}\n")
         print_rule()
         exit(1)
 
@@ -45,9 +43,11 @@ def calculate_metrics(input_format, extracted_path, config):
             )
             return data_calculated, False
 
-        for file, file_name in read_multiple_files(extracted_path, input_format, "metrics"):
+        for file, file_name in read_multiple_files(
+            extracted_path, input_format, "metrics"
+        ):
             if file_name.startswith("github_"):
-                file_name = file_name[len("github_"):]
+                file_name = file_name[len("github_") :]
             result = calculate_all(file, file_name, config)
             data_calculated.append(result)
 
@@ -55,7 +55,7 @@ def calculate_metrics(input_format, extracted_path, config):
     else:
         try:
             if extracted_path.name.startswith("github_"):
-                extracted_path.name = extracted_path.name[len("github_"):]
+                extracted_path.name = extracted_path.name[len("github_") :]
             result = calculate_all(
                 open_json_file(extracted_path), extracted_path.name, config
             )

@@ -32,8 +32,8 @@ def calculate_characteristics(config, subchars):
                 subchars, char["subcharacteristics"]
             ),
         }
-        if(len(char_info["subcharacteristics"])>0):
-                    calculate_infos.append(char_info)
+        if len(char_info["subcharacteristics"]) > 0:
+            calculate_infos.append(char_info)
 
     headers = ["Id", "Name", "Description", "Value", "Created at"]
 

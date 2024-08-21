@@ -41,7 +41,10 @@ def should_process_metrics(config):
     for characteristic in config.get("characteristics", []):
         for subcharacteristic in characteristic.get("subcharacteristics", []):
             for measure in subcharacteristic.get("measures", []):
-                if measure.get("key") not in measures["sonarqube"] and measure.get("key") not in measures["github"]:
+                if (
+                    measure.get("key") not in measures["sonarqube"]
+                    and measure.get("key") not in measures["github"]
+                ):
                     return False
     return True
 
@@ -119,7 +122,9 @@ def aggregate_metrics(input_format, folder_path, config: json):
     have_metrics = False
 
     if should_process_metrics(config):
-        result = process_metrics(folder_path, github_files if input_format == "github" else sonar_files)
+        result = process_metrics(
+            folder_path, github_files if input_format == "github" else sonar_files
+        )
 
         if not result:
             print_error("> [red]Error: Unexpected result from process_github_metrics")
@@ -131,7 +136,9 @@ def aggregate_metrics(input_format, folder_path, config: json):
         return False
 
     if not have_metrics:
-        print_error(f"> [red]Error: No metrics where found in the .msgram files from the type: {input_format}")
+        print_error(
+            f"> [red]Error: No metrics where found in the .msgram files from the type: {input_format}"
+        )
         return False
 
     for filename, file_content in result:
