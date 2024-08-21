@@ -180,9 +180,9 @@ def create_parser():
     )
     parser_calculate.set_defaults(func=command_calculate)  # function command calculate
 
-    # =====================================< COMMAND norm-diff >=====================================
+    # =====================================< COMMAND norm_diff >=====================================
     parser_norm_diff = subparsers.add_parser(
-        "norm-diff",
+        "norm_diff",
         help="Calculate the norm difference between the planned metrics and the developed.",
     )
 
