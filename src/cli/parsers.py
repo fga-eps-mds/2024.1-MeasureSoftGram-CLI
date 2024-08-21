@@ -228,31 +228,28 @@ def create_parser():
     )
 
     parser_calculate.add_argument(
-        "-ec",
-        "--extracted_calculation",
+        "-rd",
+        "--rd_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the calculated directory",
+        help="Path to the .json file with the model-calculated values for a release's quality"
+        "characteristics observed/developed.",
     )
 
     parser_calculate.add_argument(
-        "-cp",
-        "--config_path",
+        "-rp",
+        "--rp_path",
         type=lambda p: Path(p).absolute(),
-        default=DEFAULT_CONFIG_PATH,
-        help="Path to the config directory",
+        help="Path to the .json file with the planned/wished values for the quality characteristics"
+        "of a release. Quality requirements goals for a release.",
     )
 
     parser_calculate.add_argument(
-        "-o",
+        "-of",
         "--output_format",
         type=str,
         choices=AVAILABLE_GEN_FORMATS,
-        default="json",
-        help=(
-            "The format of the output (export) values are: "
-            + ", ".join(SUPPORTED_FORMATS)
-        ),
+        help=("The format of the output (export) values is tabular"),
     )
-    parser_calculate.set_defaults(func=command_diff)  # function command calculate
+    parser_calculate.set_defaults(func=command_diff)
 
     return parser

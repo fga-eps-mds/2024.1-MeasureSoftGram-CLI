@@ -7,6 +7,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.progress import BarColumn, Progress, TaskProgressColumn, TextColumn
 from rich.table import Table
+from rich.text import Text
 
 logger = logging.getLogger("msgram")
 console = Console(highlight=False, soft_wrap=False, width=140)
@@ -119,7 +120,7 @@ def print_diff_table(the_dict: dict, table_name: str = "", field: str = ""):
     table = Table(
         title=table_name,
         title_style="bold",
-        row_styles=["none", "dim"],
+        row_styles=["none"],
         border_style="bright_yellow",
         pad_edge=False,
         box=box.MINIMAL,
@@ -130,39 +131,45 @@ def print_diff_table(the_dict: dict, table_name: str = "", field: str = ""):
         no_wrap=True,
         header_style="bold cyan",
         footer_style="bright_cian",
-        style="cyan",
     )
 
     table.add_column(
         "Planned",
         no_wrap=True,
-        header_style="bold red",
-        footer_style="bright_red",
-        style="red",
+        header_style="bold cyan",
+        footer_style="bright_cian",
     )
 
     table.add_column(
         "Developed",
         no_wrap=True,
-        header_style="bold red",
-        footer_style="bright_red",
-        style="red",
+        header_style="bold cyan",
+        footer_style="bright_cian",
     )
 
     table.add_column(
         "Diff",
         no_wrap=True,
-        header_style="bold red",
-        footer_style="bright_red",
-        style="red",
+        header_style="bold cyan",
+        footer_style="bright_cian",
     )
 
     for field, value in the_dict.items():
+        row_style = format_diff_color(value)
         table.add_row(
-            str(field),
-            str(value["planned"]),
-            str(value["developed"]),
-            str(value["diff"]),
+            Text(str(field), style=row_style),
+            Text(str(value["planned"]), style=row_style),
+            Text(str(value["developed"]), style=row_style),
+            Text(str(value["diff"]), style=row_style),
         )
 
     console.print(table)
+
+
+def format_diff_color(value):
+    if value["planned"] - value["developed"] < 0:
+        return "green"
+    elif value["planned"] - value["developed"] > 0:
+        return "red"
+    else:
+        return "white"

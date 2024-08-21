@@ -17,20 +17,18 @@ from src.cli.utils import (
     print_rule,
 )
 from src.cli.exceptions import exceptions
-from src.config.settings import DEFAULT_CONFIG_PATH, DIFF_FILE_CONFIG
+from src.config.settings import DEFAULT_CONFIG_PATH
 
 logger = logging.getLogger("msgram")
 
 
 def read_config_file(config_path):
     try:
-        json = open_json_file(config_path / DIFF_FILE_CONFIG)
+        json = open_json_file(config_path)
 
         return sorted(json, key=lambda x: x["key"])
     except exceptions.MeasureSoftGramCLIException as e:
-        print_error(
-            f"[red]Error reading msgram_diff.json config file in {config_path}: {e}\n"
-        )
+        print_error(f"[red]Error reading config file in {config_path}: {e}\n")
         print_rule()
         exit(1)
 
@@ -107,8 +105,8 @@ def calculate_diff(planned, calculated):
 def command_diff(args):
     try:
         output_format: str = args["output_format"]
-        config_path = args["config_path"]
-        extracted_calculation = args["extracted_calculation"]
+        config_path = args["rp_path"]
+        extracted_calculation = args["rd_path"]
 
     except KeyError as e:
         logger.error(f"KeyError: args[{e}] - non-existent parameters")
@@ -130,6 +128,8 @@ def command_diff(args):
 
     if success:
         print_info("\n[#A9A9A9]Diff calculation performed[/] successfully!")
+    else:
+        exit(1)
 
     show_results(output_format, diff_calculated, config_path)
     print_rule()
@@ -167,7 +167,7 @@ def show_tabulate(data_calculated):
 
 
 def export_json(data_calculated: list, file_path: Path = DEFAULT_CONFIG_PATH):
-    file_path = file_path.joinpath("calc_diff_msgram.json")
+    file_path = file_path.parent.joinpath("calc_diff_msgram.json")
     with open(file_path, "w", encoding="utf-8") as write_file:
         json.dump(
             data_calculated,
@@ -178,10 +178,17 @@ def export_json(data_calculated: list, file_path: Path = DEFAULT_CONFIG_PATH):
 
 
 def export_csv(data_calculated: list, file_path: Path = Path("DEFAULT_CONFIG_PATH")):
-    file_path = file_path.joinpath("calc_diff_msgram.csv")
+    file_path = file_path.parent.joinpath("calc_diff_msgram.csv")
 
     with open(file_path, "w", newline="") as csv_file:
-        fieldnames = ["repository", "version", "key", "planned", "developed", "diff"]
+        fieldnames = [
+            "repository",
+            "version",
+            "characteristic",
+            "planned",
+            "developed",
+            "diff",
+        ]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
         writer.writeheader()
@@ -191,7 +198,10 @@ def export_csv(data_calculated: list, file_path: Path = Path("DEFAULT_CONFIG_PAT
                     {
                         "repository": data["repository"],
                         "version": data["version"],
-                        **row,
+                        "characteristic": row.get("key", ""),
+                        "planned": row.get("planned", ""),
+                        "developed": row.get("developed", ""),
+                        "diff": row.get("diff", ""),
                     }
                 )
 
