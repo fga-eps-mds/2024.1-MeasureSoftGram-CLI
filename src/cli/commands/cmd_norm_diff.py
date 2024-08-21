@@ -53,11 +53,23 @@ def command_norm_diff(args):
     planned_data = read_planned_file(rp_path, sort_key="key")
     calculated_data = read_calculated_file(rd_path)
 
-    planned_vector, calculated_vector = extract_values(planned_data, calculated_data, rp_path, rd_path)
+    planned_vector, calculated_vector = extract_values(
+        planned_data, calculated_data, rp_path, rd_path
+    )
     norm_diff_value = norm_diff(planned_vector, calculated_vector)
 
     print_info("\n[#A9A9A9]Norm diff calculation performed successfully![/]\n")
-    print_info("[#A9A9A9]The norm_diff value indicates the difference between the observed quality (Rd) and the planned target (Rp). A norm_diff of 0 means that the observed quality perfectly aligns with the planned target. If norm_diff is not equal to 0, it shows a deviation from the target. In this case, you should determine whether the performance is above or below the planned quality. For a detailed analysis of these differences, use the msgram diff command.[/]\n")
+
+    print_info(
+        "[#A9A9A9]The norm_diff value indicates the difference between the observed "
+        "quality (Rd) and the planned target (Rp). A norm_diff of 0 means that the "
+        "observed quality perfectly aligns with the planned target. If norm_diff is "
+        "not equal to 0, it shows a deviation from the target. In this case, you "
+        "should determine whether the performance is above or below the planned "
+        "quality. For a detailed analysis of these differences, use the msgram diff "
+        "command.[/]\n"
+    )
+
     print(f"Norm Diff: {norm_diff_value}")
     print_rule()
 
@@ -88,16 +100,20 @@ def extract_values(planned_data, calculated_data, rp_path, rd_path):
 
         for value in planned_values:
             if value > 1 or value < 0:
-                print_error(f"[red]The values informed in the .json file {rp_path} must be between 0 and 1.\n")
+                print_error(
+                    f"[red]The values informed in the .json file {rp_path} must be between 0 and 1.\n"
+                )
                 print_rule()
                 exit(1)
 
         for value in calculated_values:
             if value > 1 or value < 0:
-                print_error(f"[red]The values informed in the .json file {rd_path} must be between 0 and 1.\n")
+                print_error(
+                    f"[red]The values informed in the .json file {rd_path} must be between 0 and 1.\n"
+                )
                 print_rule()
                 exit(1)
-    
+
         return (np.array(planned_values), np.array(calculated_values))
     except exceptions.MeasureSoftGramCLIException as e:
         print_error(f"[red]Error extracting values: {e}\n")

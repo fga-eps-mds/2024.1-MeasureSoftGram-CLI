@@ -190,14 +190,16 @@ def create_parser():
         "-rp",
         "--rp_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the .json file with the planned/wished values ​​for the quality characteristics of a release. Quality requirements goals for a release.",
+        help="Path to the .json file with the planned/wished values ​​for the quality "
+        "characteristics of a release. Quality requirements goals for a release.",
     )
 
     parser_norm_diff.add_argument(
         "-rd",
         "--rd_path",
         type=lambda p: Path(p).absolute(),
-        help="Path to the .json file with the model-calculated values ​​for a release's quality characteristics observed/developed.",
+        help="Path to the .json file with the model-calculated values ​​for a release's "
+        "quality characteristics observed/developed.",
     )
 
     parser_norm_diff.set_defaults(

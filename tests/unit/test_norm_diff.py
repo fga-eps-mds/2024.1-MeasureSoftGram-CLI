@@ -132,7 +132,7 @@ def test_missmatch_values():
     assert excinfo.value.code == 1
     assert "Error extracting values" in output
 
-def test_planned_value_bigger_than_one():
+def test_planned_value_not_between_one_and_zero():
     config_dirpath = tempfile.mkdtemp()
 
     captured_output = StringIO()
@@ -157,7 +157,7 @@ def test_planned_value_bigger_than_one():
     assert "The values informed in the .json" in output
 
 
-def test_developed_value_bigger_than_one():
+def test_developed_value_not_between_one_and_zero():
     config_dirpath = tempfile.mkdtemp()
 
     captured_output = StringIO()
