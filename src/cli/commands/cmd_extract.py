@@ -38,7 +38,7 @@ def get_infos_from_name(filename: str) -> str:
         print_warn(f"filename: {filename}")
         sys.exit(1)
 
-    file_name = filename.split(".")[0]
+    file_name = filename.split(".json")[0]
 
     return f"{file_name}-extracted.msgram"
 
