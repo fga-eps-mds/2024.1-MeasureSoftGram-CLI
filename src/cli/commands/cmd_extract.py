@@ -60,7 +60,6 @@ def command_extract(args):
         output_origin = args["output_origin"]
         extracted_path = args["extracted_path"]
         data_path = args.get("data_path", None)
-        language_extension = args["language_extension"]
         repository_path = args.get("repository_path", None)
 
     except Exception as e:
@@ -128,7 +127,6 @@ def command_extract(args):
 
     logger.debug(f"output_origin: {output_origin}")
     logger.debug(f"data_path: {data_path}")
-    logger.debug(f"language_extension: {language_extension}")
     logger.debug(f"extracted_path: {extracted_path}")
 
     files = list(data_path.glob("*.json"))

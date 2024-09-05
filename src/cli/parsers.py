@@ -8,6 +8,7 @@ from src.cli.commands.cmd_extract import command_extract
 from src.cli.commands.cmd_calculate import command_calculate
 from src.cli.commands.cmd_list import command_list
 from src.cli.commands.cmd_norm_diff import command_norm_diff
+from src.cli.commands.cmd_perf_eff import command_perf_eff
 
 from src.config.settings import (
     AVAILABLE_IMPORTS,
@@ -70,21 +71,21 @@ def create_parser():
     # =====================================< COMMAND extract >=====================================
     parser_extract = subparsers.add_parser("extract", help="Extract supported metrics")
 
-    parser_extract.add_argument(
-        "-o",
-        "--output_origin",
-        required=True,
-        type=str,
-        choices=(AVAILABLE_IMPORTS),
-        help=(
-            "Import a metrics files/repository from some origin. Valid values are: "
-            + ", ".join(AVAILABLE_IMPORTS)
-        ),
-    )
+    # parser_extract.add_argument(
+    #     "-o",
+    #     "--output_origin",
+    #     required=True,
+    #     type=str,
+    #     choices=(AVAILABLE_IMPORTS),
+    #     help=(
+    #         "Import a metrics files/repository from some origin. Valid values are: "
+    #         + ", ".join(AVAILABLE_IMPORTS)
+    #     ),
+    # )
 
     parser_extract.add_argument(
-        "-dp",
-        "--data_path",
+        "-sp",
+        "--sonar_path",
         type=lambda p: Path(p).absolute(),
         help="Path to analysis data directory",
     )
@@ -98,8 +99,8 @@ def create_parser():
     )
 
     parser_extract.add_argument(
-        "-lb",
-        "--label",
+        "-gl",
+        "--gh_label",
         type=str,
         help=(
             "Selected label name for extracted user story issues. Format 'XX YY'."
@@ -108,27 +109,19 @@ def create_parser():
     )
 
     parser_extract.add_argument(
-        "-wf",
-        "--workflows",
+        "-gw",
+        "--gh_workflows",
         type=str,
         help="Selected workflow name to be considered in the CI Feedback Time extraction. Default: 'build'",
     )
 
     parser_extract.add_argument(
-        "-fd",
-        "--filter_date",
+        "-gd",
+        "--github_date_range",
         type=str,
         help=(
             "Filter range of dates considered on extraction, with format 'dd/mm/yyyy-dd/mm/yyyy'"
         ),
-    )
-
-    parser_extract.add_argument(
-        "-le",
-        "--language_extension",
-        type=str,
-        help="The source code language extension",
-        default="py",
     )
 
     parser_extract.add_argument(
@@ -205,16 +198,16 @@ def create_parser():
     parser_norm_diff.add_argument(
         "-rp",
         "--rp_path",
-        type=lambda p: Path(p).absolute(),
-        help="Path to the .json file with the planned/wished values ​​for the quality "
-        "characteristics of a release. Quality requirements goals for a release.",
+        type=lambda p: path(p).absolute(),
+        help="path to the .json file with the planned/wished values ​​for the quality "
+        "characteristics of a release. quality requirements goals for a release.",
     )
 
     parser_norm_diff.add_argument(
         "-rd",
         "--rd_path",
-        type=lambda p: Path(p).absolute(),
-        help="Path to the .json file with the model-calculated values ​​for a release's "
+        type=lambda p: path(p).absolute(),
+        help="path to the .json file with the model-calculated values ​​for a release's "
         "quality characteristics observed/developed.",
     )
 
@@ -253,5 +246,27 @@ def create_parser():
         help=("The format of the output (export) values is tabular"),
     )
     parser_calculate.set_defaults(func=command_diff)
+
+    # =====================================< COMMAND perf_eff >=====================================
+    parser_perf_eff = subparsers.add_parser(
+        "perf_eff",
+        help="Calculates the performance efficiency between two releases",
+    )
+
+    parser_perf_eff.add_argument(
+        "-fr",
+        "--first_release",
+        type=lambda p: Path(p).absolute(),
+        help="",
+    )
+
+    parser_perf_eff.add_argument(
+        "-sr",
+        "--second_release",
+        type=lambda p: Path(p).absolute(),
+        help="",
+    )
+
+    parser_perf_eff.set_defaults(func=command_perf_eff)  # function command perf_eff
 
     return parser
