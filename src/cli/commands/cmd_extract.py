@@ -59,8 +59,11 @@ def command_extract(args):
     try:
         output_origin = args["output_origin"]
         extracted_path = args["extracted_path"]
-        data_path = args.get("data_path", None)
-        repository_path = args.get("repository_path", None)
+        sonar_path = args.get("sonar_path", None)
+        gh_repository = args.get("gh_repository", None)
+        gh_label = args.get("gh_label", None)
+        gh_workflows = args.get("gh_workflows", None)
+        gh_date_range = args.get("gh_date_range", None)
 
     except Exception as e:
         logger.error(f"KeyError: args[{e}] - non-existent parameters")
@@ -75,7 +78,7 @@ def command_extract(args):
     check_error_accompany_github("wf", workflows, output_origin)
     check_error_accompany_github("fd", filter_date, output_origin)
 
-    if filter_date is not None and not is_valid_date_range(filter_date):
+    if gh_date_range is not None and not is_valid_date_range(gh_date_range):
         logger.error(
             "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
         )
@@ -84,7 +87,7 @@ def command_extract(args):
         )
         sys.exit(1)
 
-    if data_path is None and repository_path is None:
+    if sonar_path is None and gh_repository is None:
         logger.error(
             "It is necessary to pass the data_path or repository_path parameters"
         )
@@ -98,19 +101,19 @@ def command_extract(args):
     print_rule("Extract metrics")
     parser = GenericParser()
 
-    if repository_path and output_origin == "github":
+    if gh_repository and output_origin == "github":
         filters = {
-            "labels": label if label else "US,User Story,User Stories",
-            "workflows": workflows.split(",") if workflows else "build",
-            "dates": filter_date if filter_date else None,
+            "labels": gh_label if gh_label else "US,User Story,User Stories",
+            "workflows": gh_workflows.split(",") if gh_workflows else "build",
+            "dates": gh_date_range if gh_date_range else None,
         }
         result = parser.parse(
-            input_value=repository_path, type_input=output_origin, filters=filters
+            input_value=gh_repository, type_input=output_origin, filters=filters
         )
-        repository_name = repository_path.replace("/", "-")
+        repository_name = gh_repository.replace("/", "-")
         save_file_with_results(
             ".msgram",
-            repository_path,
+            gh_repository,
             name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.msgram",
             result=result,
         )
@@ -126,13 +129,13 @@ def command_extract(args):
         sys.exit(1)
 
     logger.debug(f"output_origin: {output_origin}")
-    logger.debug(f"data_path: {data_path}")
+    logger.debug(f"data_path: {sonar_path}")
     logger.debug(f"extracted_path: {extracted_path}")
 
-    files = list(data_path.glob("*.json"))
+    files = list(sonar_path.glob("*.json"))
 
     if not files:
-        print_warn(f"No JSON files found in the specified data_path: {data_path}\n")
+        print_warn(f"No JSON files found in the specified data_path: {sonar_path}\n")
         sys.exit(1)
 
     valid_files = len(files)
@@ -144,7 +147,7 @@ def command_extract(args):
         )
         progress_bar.advance(task_request)
 
-        for component, filename, files_error in folder_reader(data_path, "json"):
+        for component, filename, files_error in folder_reader(sonar_path, "json"):
             if files_error:
                 progress_bar.update(task_request, advance=files_error)
                 valid_files = valid_files - files_error

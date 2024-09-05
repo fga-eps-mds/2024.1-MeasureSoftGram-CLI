@@ -33,6 +33,8 @@ def read_config_file(config_path):
         print_rule()
         exit(1)
 
+# calculate_sonar
+# calculate_github
 
 def calculate_metrics(input_format, extracted_path, config):
     data_calculated = []
