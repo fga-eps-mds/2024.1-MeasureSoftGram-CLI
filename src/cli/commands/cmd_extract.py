@@ -70,13 +70,9 @@ def command_extract(args):
         print_warn(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
-    label = args.get("label", None)
-    workflows = args.get("workflows", None)
-    filter_date = args.get("filter_date", None)
-
-    check_error_accompany_github("lb", label, output_origin)
-    check_error_accompany_github("wf", workflows, output_origin)
-    check_error_accompany_github("fd", filter_date, output_origin)
+    check_error_accompany_github("lb", gh_label, output_origin)
+    check_error_accompany_github("wf", gh_workflows, output_origin)
+    check_error_accompany_github("fd", gh_date_range, output_origin)
 
     if gh_date_range is not None and not is_valid_date_range(gh_date_range):
         logger.error(
