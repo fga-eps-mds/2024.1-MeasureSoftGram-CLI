@@ -163,26 +163,6 @@ def command_extract(args):
     # TODO: Performance efficiency path is defined so we should generate perf_eff metrics
 
 
-    # if gh_repository and output_origin == "github":
-    #     filters = {
-    #         "labels": gh_label if gh_label else "US,User Story,User Stories",
-    #         "workflows": gh_workflows.split(",") if gh_workflows else "build",
-    #         "dates": gh_date_range if gh_date_range else None,
-    #     }
-    #     result = parser.parse(
-    #         input_value=gh_repository, type_input=output_origin, filters=filters
-    #     )
-    #     repository_name = gh_repository.replace("/", "-")
-    #     save_file_with_results(
-    #         ".msgram",
-    #         gh_repository,
-    #         name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.msgram",
-    #         result=result,
-    #     )
-    #     return
-
-
-
 def save_file_with_results(extracted_path, filename, name, result):
     print(f"[dark_green]Reading:[/] [black]{filename}[/]")
     print(f"[dark_green]Save   :[/] [black]{name}[/]\n")
