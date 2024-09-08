@@ -61,10 +61,10 @@ def command_extract(args):
     # First check if sonar_path and gh_repository are none
     if sonar_path is None and gh_repository is None:
         logger.error(
-            "It is necessary to pass the data_path or repository_path parameters"
+            "It is necessary to pass the sonar_path or github_repository parameters"
         )
         print_warn(
-            "It is necessary to pass the data_path or repository_path parameters"
+            "It is necessary to pass the sonar_path or github_repository parameters"
         )
         sys.exit(1)
 
@@ -89,6 +89,7 @@ def command_extract(args):
             "workflows": gh_workflows.split(",") if gh_workflows else "build",
             "dates": gh_date_range if gh_date_range else None,
         }
+        print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
         result = parser.parse(
             input_value=gh_repository, type_input=output_origin, filters=filters
         )
@@ -156,11 +157,12 @@ def command_extract(args):
                 f"\n\nMetrics successfully extracted [[blue bold]{valid_files}/{len(files)} "
                 f"files - {time_extract:0.2f} seconds[/]]!"
             )
-        print_panel(
-            "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
-        )
 
     # TODO: Performance efficiency path is defined so we should generate perf_eff metrics
+
+    print_panel(
+        "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
+    )
 
 
 def save_file_with_results(extracted_path, filename, name, result):
