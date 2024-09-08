@@ -97,6 +97,39 @@ def test_diff_invalid_config_file():
     shutil.rmtree(config_dirpath)
 
 
+def test_diff_invalid_config_value():
+    captured_output = StringIO()
+    sys.stdout = captured_output
+
+    config_dirpath = tempfile.mkdtemp()
+
+    shutil.copy(
+        "tests/unit/data/msgram_diff_error.json",
+        f"{config_dirpath}/msgram_diff_error.json",
+    )
+    shutil.copy(
+        "tests/unit/data/calc_msgram_diff.json",
+        f"{config_dirpath}/calc_msgram_diff.json",
+    )
+
+    args = {
+        "output_format": "json",
+        "rp_path": Path(config_dirpath + "/msgram_diff_error.json"),
+        "rd_path": Path(config_dirpath + "/calc_msgram_diff.json"),
+    }
+
+    with pytest.raises(SystemExit):
+        command_diff(args)
+
+    sys.stdout = sys.__stdout__
+    assert (
+        "Failed to decode the JSON file: The values informed in the"
+        in captured_output.getvalue()
+    )
+
+    shutil.rmtree(config_dirpath)
+
+
 def test_diff_invalid_calculated_file():
     captured_output = StringIO()
     sys.stdout = captured_output
