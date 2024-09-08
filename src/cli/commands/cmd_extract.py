@@ -43,17 +43,6 @@ def get_infos_from_name(filename: str) -> str:
     return f"{file_name}-extracted.msgram"
 
 
-def check_error_accompany_github(param, value, output_origin):
-    if value is not None and output_origin == "sonarqube":
-        logger.error(
-            f'Error: The parameter "-{param}" must accompany a github repository output'
-        )
-        print_warn(
-            f'Error: The parameter "-{param}" must accompany a github repository output'
-        )
-        sys.exit(1)
-
-
 def command_extract(args):
     time_init = perf_counter()
     try:
@@ -68,10 +57,6 @@ def command_extract(args):
         logger.error(f"KeyError: args[{e}] - non-existent parameters")
         print_warn(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
-
-    # check_error_accompany_github("lb", gh_label, output_origin)
-    # check_error_accompany_github("wf", gh_workflows, output_origin)
-    # check_error_accompany_github("fd", gh_date_range, output_origin)
 
     # First check if sonar_path and gh_repository are none
     if sonar_path is None and gh_repository is None:
