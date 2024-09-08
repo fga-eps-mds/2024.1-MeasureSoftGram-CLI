@@ -57,7 +57,6 @@ def check_error_accompany_github(param, value, output_origin):
 def command_extract(args):
     time_init = perf_counter()
     try:
-        output_origin = args["output_origin"]
         extracted_path = args["extracted_path"]
         sonar_path = args.get("sonar_path", None)
         gh_repository = args.get("gh_repository", None)
@@ -70,19 +69,11 @@ def command_extract(args):
         print_warn(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
-    check_error_accompany_github("lb", gh_label, output_origin)
-    check_error_accompany_github("wf", gh_workflows, output_origin)
-    check_error_accompany_github("fd", gh_date_range, output_origin)
+    # check_error_accompany_github("lb", gh_label, output_origin)
+    # check_error_accompany_github("wf", gh_workflows, output_origin)
+    # check_error_accompany_github("fd", gh_date_range, output_origin)
 
-    if gh_date_range is not None and not is_valid_date_range(gh_date_range):
-        logger.error(
-            "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
-        )
-        print_warn(
-            "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
-        )
-        sys.exit(1)
-
+    # First check if sonar_path and gh_repository are none
     if sonar_path is None and gh_repository is None:
         logger.error(
             "It is necessary to pass the data_path or repository_path parameters"
@@ -97,7 +88,17 @@ def command_extract(args):
     print_rule("Extract metrics")
     parser = GenericParser()
 
-    if gh_repository and output_origin == "github":
+    # Github repository is defined so we should generate github metrics
+    if gh_repository:
+        output_origin = "github"
+        if gh_date_range is not None and not is_valid_date_range(gh_date_range):
+            logger.error(
+                "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
+            )
+            print_warn(
+                "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
+            )
+            sys.exit(1)
         filters = {
             "labels": gh_label if gh_label else "US,User Story,User Stories",
             "workflows": gh_workflows.split(",") if gh_workflows else "build",
@@ -113,56 +114,88 @@ def command_extract(args):
             name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.msgram",
             result=result,
         )
-        return
-
-    if not os.path.isdir(extracted_path):
+    elif gh_label or gh_workflows or gh_date_range:
         logger.error(
-            f'FileNotFoundError: extract directory "{extracted_path}" does not exists'
+            "Error: gh_repository must be specified in order to use gh_ parameters"
         )
         print_warn(
-            f"FileNotFoundError: extract directory[blue]'{extracted_path}'[/]does not exists"
+            "Error: gh_repository must be specified in order to use gh_ parameters"
         )
         sys.exit(1)
 
-    logger.debug(f"output_origin: {output_origin}")
-    logger.debug(f"data_path: {sonar_path}")
-    logger.debug(f"extracted_path: {extracted_path}")
+    # Sonargube path is defined so we should generate sonar metrics
+    if sonar_path:
+        output_origin = "sonarqube"
+        if not os.path.isdir(extracted_path):
+            logger.error(
+                f'FileNotFoundError: extract directory "{extracted_path}" does not exists'
+            )
+            print_warn(
+                f"FileNotFoundError: extract directory[blue]'{extracted_path}'[/]does not exists"
+            )
+            sys.exit(1)
 
-    files = list(sonar_path.glob("*.json"))
+        logger.debug(f"output_origin: {output_origin}")
+        logger.debug(f"data_path: {sonar_path}")
+        logger.debug(f"extracted_path: {extracted_path}")
 
-    if not files:
-        print_warn(f"No JSON files found in the specified data_path: {sonar_path}\n")
-        sys.exit(1)
+        files = list(sonar_path.glob("*.json"))
 
-    valid_files = len(files)
+        if not files:
+            print_warn(f"No JSON files found in the specified data_path: {sonar_path}\n")
+            sys.exit(1)
 
-    print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
-    with make_progress_bar() as progress_bar:
-        task_request = progress_bar.add_task(
-            "[#A9A9A9]Extracting files: ", total=len(files)
-        )
-        progress_bar.advance(task_request)
+        valid_files = len(files)
 
-        for component, filename, files_error in folder_reader(sonar_path, "json"):
-            if files_error:
-                progress_bar.update(task_request, advance=files_error)
-                valid_files = valid_files - files_error
-
-            name = get_infos_from_name(filename)
-            result = parser.parse(input_value=component, type_input=output_origin)
-
-            save_file_with_results(extracted_path, filename, name, result)
-
+        print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
+        with make_progress_bar() as progress_bar:
+            task_request = progress_bar.add_task(
+                "[#A9A9A9]Extracting files: ", total=len(files)
+            )
             progress_bar.advance(task_request)
 
-        time_extract = perf_counter() - time_init
-        print_info(
-            f"\n\nMetrics successfully extracted [[blue bold]{valid_files}/{len(files)} "
-            f"files - {time_extract:0.2f} seconds[/]]!"
+            for component, filename, files_error in folder_reader(sonar_path, "json"):
+                if files_error:
+                    progress_bar.update(task_request, advance=files_error)
+                    valid_files = valid_files - files_error
+
+                name = get_infos_from_name(filename)
+                result = parser.parse(input_value=component, type_input=output_origin)
+
+                save_file_with_results(extracted_path, filename, name, result)
+
+                progress_bar.advance(task_request)
+
+            time_extract = perf_counter() - time_init
+            print_info(
+                f"\n\nMetrics successfully extracted [[blue bold]{valid_files}/{len(files)} "
+                f"files - {time_extract:0.2f} seconds[/]]!"
+            )
+        print_panel(
+            "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
         )
-    print_panel(
-        "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
-    )
+
+    # TODO: Performance efficiency path is defined so we should generate perf_eff metrics
+
+
+    # if gh_repository and output_origin == "github":
+    #     filters = {
+    #         "labels": gh_label if gh_label else "US,User Story,User Stories",
+    #         "workflows": gh_workflows.split(",") if gh_workflows else "build",
+    #         "dates": gh_date_range if gh_date_range else None,
+    #     }
+    #     result = parser.parse(
+    #         input_value=gh_repository, type_input=output_origin, filters=filters
+    #     )
+    #     repository_name = gh_repository.replace("/", "-")
+    #     save_file_with_results(
+    #         ".msgram",
+    #         gh_repository,
+    #         name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.msgram",
+    #         result=result,
+    #     )
+    #     return
+
 
 
 def save_file_with_results(extracted_path, filename, name, result):
