@@ -41,7 +41,7 @@ def create_parser():
         "--config_path",
         type=lambda p: Path(p).absolute(),
         default=DEFAULT_CONFIG_PATH,
-        help="Path to default config directory",
+        help="Path to the directory with the model configuration file (msgram.json).",
     )
     parser_init.set_defaults(func=command_init)  # function command init
 
@@ -56,7 +56,7 @@ def create_parser():
         "--config_path",
         type=lambda p: Path(p).absolute(),
         default=DEFAULT_CONFIG_PATH,
-        help="Path to default config directory.",
+        help="Path to the directory with the model configuration file (msgram.json).",
     )
 
     parser_list_config.add_argument(
@@ -71,13 +71,13 @@ def create_parser():
     parser_extract = subparsers.add_parser("extract", help="Extract supported metrics")
 
     parser_extract.add_argument(
-        "-o",
-        "--output_origin",
+        "-in",
+        "--input_origin",
         required=True,
         type=str,
         choices=(AVAILABLE_IMPORTS),
         help=(
-            "Import a metrics files/repository from some origin. Valid values are: "
+            "Source of information. Valid values are: "
             + ", ".join(AVAILABLE_IMPORTS)
         ),
     )
@@ -167,7 +167,7 @@ def create_parser():
         "--config_path",
         type=lambda p: Path(p).absolute(),
         default=DEFAULT_CONFIG_PATH,
-        help="Path to the config directory",
+        help="Path to the directory with the model configuration file (msgram.json).",
     )
 
     parser_calculate.add_argument(
@@ -178,7 +178,7 @@ def create_parser():
         choices=AVAILABLE_IMPORTS,
         default="sonarqube",
         help=(
-            "Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
+            "Source of information. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
         ),
     )
 
