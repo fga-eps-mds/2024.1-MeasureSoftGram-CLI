@@ -73,6 +73,15 @@ def command_extract(args):
     print_rule("Extract metrics")
     parser = GenericParser()
 
+    if not os.path.isdir(extracted_path):
+        logger.error(
+            f'FileNotFoundError: extract directory "{extracted_path}" does not exists'
+        )
+        print_warn(
+            f"FileNotFoundError: extract directory[blue]'{extracted_path}'[/]does not exists"
+        )
+        sys.exit(1)
+
     # Github repository is defined so we should generate github metrics
     if gh_repository:
         output_origin = "github"
@@ -95,7 +104,7 @@ def command_extract(args):
         )
         repository_name = gh_repository.replace("/", "-")
         save_file_with_results(
-            ".msgram",
+            extracted_path,
             gh_repository,
             name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.msgram",
             result=result,
@@ -112,14 +121,6 @@ def command_extract(args):
     # Sonargube path is defined so we should generate sonar metrics
     if sonar_path:
         output_origin = "sonarqube"
-        if not os.path.isdir(extracted_path):
-            logger.error(
-                f'FileNotFoundError: extract directory "{extracted_path}" does not exists'
-            )
-            print_warn(
-                f"FileNotFoundError: extract directory[blue]'{extracted_path}'[/]does not exists"
-            )
-            sys.exit(1)
 
         logger.debug(f"output_origin: {output_origin}")
         logger.debug(f"data_path: {sonar_path}")
