@@ -71,18 +71,6 @@ def create_parser():
     # =====================================< COMMAND extract >=====================================
     parser_extract = subparsers.add_parser("extract", help="Extract supported metrics")
 
-    # parser_extract.add_argument(
-    #     "-o",
-    #     "--output_origin",
-    #     required=True,
-    #     type=str,
-    #     choices=(AVAILABLE_IMPORTS),
-    #     help=(
-    #         "Import a metrics files/repository from some origin. Valid values are: "
-    #         + ", ".join(AVAILABLE_IMPORTS)
-    #     ),
-    # )
-
     parser_extract.add_argument(
         "-sp",
         "--sonar_path",
