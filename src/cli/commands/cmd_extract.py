@@ -19,6 +19,7 @@ from src.cli.utils import (
     print_warn,
     is_valid_date_range,
 )
+from src.cli.resources.perf_eff_parser import parse_performance_efficiency_data
 
 logger = logging.getLogger("msgram")
 
@@ -52,19 +53,23 @@ def command_extract(args):
         gh_label = args.get("gh_label", None)
         gh_workflows = args.get("gh_workflows", None)
         gh_date_range = args.get("gh_date_range", None)
+        pe_release1 = args.get("pe_release_1", None)
+        pe_release2 = args.get("pe_release_2", None)
+        pe_repository_name = args.get("pe_repository_name", None)
 
     except Exception as e:
         logger.error(f"KeyError: args[{e}] - non-existent parameters")
         print_warn(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
+    pe_params = (pe_release1 is not None) + (pe_release2 is not None) + (pe_repository_name is not None)
     # First check if sonar_path and gh_repository are none
-    if sonar_path is None and gh_repository is None:
+    if (sonar_path is None) and (gh_repository is None) and (pe_params == 0):
         logger.error(
-            "It is necessary to pass the sonar_path or github_repository parameters"
+            "It is necessary to pass sonar_path, github_repository or the pe_ parameters"
         )
         print_warn(
-            "It is necessary to pass the sonar_path or github_repository parameters"
+            "It is necessary to pass sonar_path, github_repository or the pe_ parameters"
         )
         sys.exit(1)
 
@@ -159,7 +164,21 @@ def command_extract(args):
                 f"files - {time_extract:0.2f} seconds[/]]!"
             )
 
-    # TODO: Performance efficiency path is defined so we should generate perf_eff metrics
+    if pe_params == 3:
+        # All pe_params are set, so we should extract the performance efficiency data
+        parsed_data = parse_performance_efficiency_data(pe_release1, pe_release2, pe_repository_name)
+        save_file_with_results(
+            extracted_path,
+            pe_repository_name,
+            name=f"perf-eff_{pe_repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
+            result=parsed_data
+        )
+    elif pe_params == 0:
+        pass
+    else: 
+        print_warn(
+            "Error: Some pe_ parameters for extracting the performance efficiency data are missing"
+        )
 
     print_panel(
         "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
@@ -171,4 +190,4 @@ def save_file_with_results(extracted_path, filename, name, result):
     print(f"[dark_green]Save   :[/] [black]{name}[/]\n")
 
     with open(f"{extracted_path}/{name}", "w") as f:
-        f.write(json.dumps(result, indent=4))
+        f.write(json.dumps(result, indent=2))

@@ -119,6 +119,27 @@ def create_parser():
         help="Path to analysis git repository",
     )
 
+    parser_extract.add_argument(
+        "-p1",
+        "--pe_release_1",
+        type=lambda p: Path(p).absolute(),
+        help="Path to the .csv file of the first release, used for extracting performance efficiency data",
+    )
+
+    parser_extract.add_argument(
+        "-p2",
+        "--pe_release_2",
+        type=lambda p: Path(p).absolute(),
+        help="Path to the .csv file of the second release, used for extracting performance efficiency data",
+    )
+
+    parser_extract.add_argument(
+        "-pn",
+        "--pe_repository_name",
+        type=str,
+        help="Name of the repository associated with the extracted performance efficiency data",
+    )
+
     parser_extract.set_defaults(func=command_extract)  # function command extract
 
     # =====================================< COMMAND calculate >=====================================
