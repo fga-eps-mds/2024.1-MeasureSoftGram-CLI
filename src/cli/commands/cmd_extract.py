@@ -115,10 +115,16 @@ def command_extract(args):
 
     if repository_path and input_origin == "github":
         filters = {
-            "labels": label if label else "US,User Story,User Stories",
+            "labels": (
+                label
+                if label
+                else "US,User Story,HU,Historia de Usuario,RF,FR,User Stories"
+            ),
             "workflows": workflows.split(",") if workflows else "build",
             "dates": filter_date if filter_date else None,
         }
+        splits = repository_path.split("/")
+        repository_path = splits[-2] + "/" + splits[-1]
         result = parser.parse(
             input_value=repository_path, type_input=input_origin, filters=filters
         )

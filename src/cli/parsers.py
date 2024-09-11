@@ -101,7 +101,8 @@ def create_parser():
         "--label",
         type=str,
         help=(
-            'Selected label name to be considered in the Story Issues extraction. Format "XX YY", including quotation marks.'
+            "Selected label name to be considered in the Story Issues extraction."
+            + ' Format "XX YY", including quotation marks.'
             + ' Default, not case sensitive: "US", "User Story" or "User Stories".'
         ),
     )
@@ -110,7 +111,8 @@ def create_parser():
         "-wf",
         "--workflows",
         type=str,
-        help='Selected workflow name to be considered in the CI Feedback Time extraction. Format "XX YY", including quotation marks.'
+        help="Selected workflow name to be considered in the CI Feedback Time extraction."
+        + ' Format "XX YY", including quotation marks.'
         + ' Default, not case sensitive: "build".',
     )
 
@@ -119,7 +121,8 @@ def create_parser():
         "--filter_date",
         type=str,
         help=(
-            'Filter range of dates considered on extraction, with format "dd/mm/yyyy-dd/mm/yyyy", including quotation marks.'
+            'Filter range of dates considered on extraction, with format "dd/mm/yyyy-dd/mm/yyyy"'
+            + ", including quotation marks."
         ),
     )
 
