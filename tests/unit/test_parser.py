@@ -44,7 +44,7 @@ def test_parser_extract():
     args = parser.parse_args(
         [
             "extract",
-            "-o",
+            "-in",
             "sonarqube",
             "-dp",
             "/path/to/data",
