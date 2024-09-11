@@ -77,8 +77,7 @@ def create_parser():
         type=str,
         choices=(AVAILABLE_IMPORTS),
         help=(
-            "Source of information. Valid values are: "
-            + ", ".join(AVAILABLE_IMPORTS)
+            "Source of information. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
         ),
     )
 
@@ -102,8 +101,8 @@ def create_parser():
         "--label",
         type=str,
         help=(
-            "Selected label name to be considered in the Story Issues extraction. Format \"XX YY\", including quotation marks."
-            + " Default, not case sensitive: \"US\", \"User Story\" or \"User Stories\"."
+            'Selected label name to be considered in the Story Issues extraction. Format "XX YY", including quotation marks.'
+            + ' Default, not case sensitive: "US", "User Story" or "User Stories".'
         ),
     )
 
@@ -111,8 +110,8 @@ def create_parser():
         "-wf",
         "--workflows",
         type=str,
-        help="Selected workflow name to be considered in the CI Feedback Time extraction. Format \"XX YY\", including quotation marks."
-            + " Default, not case sensitive: \"build\".",
+        help='Selected workflow name to be considered in the CI Feedback Time extraction. Format "XX YY", including quotation marks.'
+        + ' Default, not case sensitive: "build".',
     )
 
     parser_extract.add_argument(
@@ -120,7 +119,7 @@ def create_parser():
         "--filter_date",
         type=str,
         help=(
-            "Filter range of dates considered on extraction, with format \"dd/mm/yyyy-dd/mm/yyyy\", including quotation marks."
+            'Filter range of dates considered on extraction, with format "dd/mm/yyyy-dd/mm/yyyy", including quotation marks.'
         ),
     )
 

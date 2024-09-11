@@ -53,18 +53,20 @@ def check_error_accompany_github(param, value, input_origin):
         )
         sys.exit(1)
 
+
 def parse_input_quotes(user_input):
     # Aspas para normalizar
     quotes = "“‘«”’»"
-    
+
     if user_input:
         # Remove aspas no início
         user_input = user_input[1:] if user_input[0] in quotes else user_input
-    
+
         # Remove aspas no final
         user_input = user_input[:-1] if user_input[-1] in quotes else user_input
-    
+
     return user_input
+
 
 def command_extract(args):
     time_init = perf_counter()
