@@ -358,7 +358,9 @@ def test_calculate_csv_output():
     command_calculate(args)
 
     output_path = Path(f"{config_dirpath}/calc_msgram.csv")
+    expected_output = Path("tests/unit/data/calc_msgram_exp_github_output.csv")
     assert output_path.stat().st_size > 0
+    assert filecmp.cmp(output_path, expected_output, shallow=False)
 
     shutil.rmtree(config_dirpath)
     shutil.rmtree(extract_dirpath)
