@@ -82,13 +82,13 @@ def command_extract(args):
 
     label = args.get("label", None)
     workflows = args.get("workflows", None)
-    filter_date = args.get("filter_date", None)
+    filter_date = parse_input_quotes(args.get("filter_date", None))
 
     check_error_accompany_github("lb", label, input_origin)
     check_error_accompany_github("wf", workflows, input_origin)
     check_error_accompany_github("fd", filter_date, input_origin)
 
-    if filter_date is not None and not is_valid_date_range(parse_input_quotes(filter_date)):
+    if filter_date is not None and not is_valid_date_range(filter_date):
         logger.error(
             "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
         )
