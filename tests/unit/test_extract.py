@@ -11,7 +11,7 @@ from pathlib import Path
 from src.cli.commands.cmd_extract import get_infos_from_name, command_extract
 
 EXTRACT_ARGS = {
-    "output_origin": "sonarqube",
+    "input_origin": "sonarqube",
     "extracted_path": Path(""),
     "data_path": Path(""),
     "language_extension": "py",
@@ -49,7 +49,7 @@ def test_command_extract_should_succeed():
     )
 
     args = {
-        "output_origin": "sonarqube",
+        "input_origin": "sonarqube",
         "extracted_path": Path(config_dirpath),
         "data_path": Path(extract_dirpath),
         "language_extension": "py",
@@ -74,7 +74,7 @@ def test_command_extract_should_succeed():
 
 @pytest.mark.parametrize(
     "extract_arg",
-    ["output_origin", "extracted_path", "language_extension"],
+    ["input_origin", "extracted_path", "language_extension"],
 )
 def test_extract_invalid_args(extract_arg):
     captured_output = StringIO()
@@ -96,7 +96,7 @@ def test_extract_invalid_args(extract_arg):
 def test_extract_fail_no_dp_or_rep():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "output_origin": "sonarqube",
+        "input_origin": "sonarqube",
         "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
     }
@@ -117,7 +117,7 @@ def test_extract_fail_no_dp_or_rep():
 def test_extract_fail_sonarqube_wf():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "output_origin": "sonarqube",
+        "input_origin": "sonarqube",
         "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
         "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
@@ -140,7 +140,7 @@ def test_extract_fail_sonarqube_wf():
 def test_extract_fail_sonarqube_lb():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "output_origin": "sonarqube",
+        "input_origin": "sonarqube",
         "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
         "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
@@ -163,7 +163,7 @@ def test_extract_fail_sonarqube_lb():
 def test_extract_fail_sonarqube_fd():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "output_origin": "sonarqube",
+        "input_origin": "sonarqube",
         "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
         "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
@@ -186,7 +186,7 @@ def test_extract_fail_sonarqube_fd():
 def test_extract_fail_date_format():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "output_origin": "github",
+        "input_origin": "github",
         "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
         "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
@@ -208,7 +208,7 @@ def test_extract_fail_date_format():
 
 def test_extract_directory_not_exist():
     args = {
-        "output_origin": "sonarqube",
+        "input_origin": "sonarqube",
         "language_extension": "py",
         "extracted_path": Path("tests/directory_not_exist"),
         "data_path": Path("tests/directory_not_exist"),

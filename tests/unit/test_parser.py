@@ -57,7 +57,7 @@ def test_parser_extract():
         ]
     )
     assert args.func == command_extract
-    assert args.output_origin == "sonarqube"
+    assert args.input_origin == "sonarqube"
     assert args.data_path == Path("/path/to/data")
     assert args.extracted_path == Path("/path/to/extracted")
     assert args.language_extension == "py"

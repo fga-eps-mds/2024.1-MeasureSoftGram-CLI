@@ -43,8 +43,8 @@ def get_infos_from_name(filename: str) -> str:
     return f"{file_name}-extracted.msgram"
 
 
-def check_error_accompany_github(param, value, output_origin):
-    if value is not None and output_origin == "sonarqube":
+def check_error_accompany_github(param, value, input_origin):
+    if value is not None and input_origin == "sonarqube":
         logger.error(
             f'Error: The parameter "-{param}" must accompany a github repository output'
         )
@@ -53,11 +53,23 @@ def check_error_accompany_github(param, value, output_origin):
         )
         sys.exit(1)
 
+def parse_input_quotes(user_input):
+    # Aspas para normalizar
+    quotes = "“‘«”’»"
+    
+    if user_input:
+        # Remove aspas no início
+        user_input = user_input[1:] if user_input[0] in quotes else user_input
+    
+        # Remove aspas no final
+        user_input = user_input[:-1] if user_input[-1] in quotes else user_input
+    
+    return user_input
 
 def command_extract(args):
     time_init = perf_counter()
     try:
-        output_origin = args["output_origin"]
+        input_origin = args["input_origin"]
         extracted_path = args["extracted_path"]
         data_path = args.get("data_path", None)
         language_extension = args["language_extension"]
@@ -72,11 +84,11 @@ def command_extract(args):
     workflows = args.get("workflows", None)
     filter_date = args.get("filter_date", None)
 
-    check_error_accompany_github("lb", label, output_origin)
-    check_error_accompany_github("wf", workflows, output_origin)
-    check_error_accompany_github("fd", filter_date, output_origin)
+    check_error_accompany_github("lb", label, input_origin)
+    check_error_accompany_github("wf", workflows, input_origin)
+    check_error_accompany_github("fd", filter_date, input_origin)
 
-    if filter_date is not None and not is_valid_date_range(filter_date):
+    if filter_date is not None and not is_valid_date_range(parse_input_quotes(filter_date)):
         logger.error(
             "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
         )
@@ -99,14 +111,14 @@ def command_extract(args):
     print_rule("Extract metrics")
     parser = GenericParser()
 
-    if repository_path and output_origin == "github":
+    if repository_path and input_origin == "github":
         filters = {
             "labels": label if label else "US,User Story,User Stories",
             "workflows": workflows.split(",") if workflows else "build",
             "dates": filter_date if filter_date else None,
         }
         result = parser.parse(
-            input_value=repository_path, type_input=output_origin, filters=filters
+            input_value=repository_path, type_input=input_origin, filters=filters
         )
         repository_name = repository_path.replace("/", "-")
         save_file_with_results(
@@ -126,7 +138,7 @@ def command_extract(args):
         )
         sys.exit(1)
 
-    logger.debug(f"output_origin: {output_origin}")
+    logger.debug(f"input_origin: {input_origin}")
     logger.debug(f"data_path: {data_path}")
     logger.debug(f"language_extension: {language_extension}")
     logger.debug(f"extracted_path: {extracted_path}")
@@ -139,7 +151,7 @@ def command_extract(args):
 
     valid_files = len(files)
 
-    print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
+    print_info(f"\n> Extract and save metrics [[blue ]{input_origin}[/]]:")
     with make_progress_bar() as progress_bar:
         task_request = progress_bar.add_task(
             "[#A9A9A9]Extracting files: ", total=len(files)
@@ -152,7 +164,7 @@ def command_extract(args):
                 valid_files = valid_files - files_error
 
             name = get_infos_from_name(filename)
-            result = parser.parse(input_value=component, type_input=output_origin)
+            result = parser.parse(input_value=component, type_input=input_origin)
 
             save_file_with_results(extracted_path, filename, name, result)
 
@@ -164,7 +176,7 @@ def command_extract(args):
             f"files - {time_extract:0.2f} seconds[/]]!"
         )
     print_panel(
-        "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
+        "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'input_origin'"
     )
 
 
