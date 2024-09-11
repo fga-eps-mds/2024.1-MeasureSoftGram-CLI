@@ -333,3 +333,31 @@ def test_calculate_invalid_extracted_file():
 
     shutil.rmtree(config_dirpath)
     shutil.rmtree(extract_dirpath)
+
+
+def test_calculate_csv_output():
+    config_dirpath = tempfile.mkdtemp()
+    extract_dirpath = tempfile.mkdtemp()
+
+    shutil.copy("tests/unit/data/msgram.json", f"{config_dirpath}/msgram.json")
+
+    extracted_file_name = "github_fga-eps-mds-2024.1-MeasureSoftGram-DOC-28-07-2024-00-00-22-extracted.metrics"
+    shutil.copy(
+        f"tests/unit/data/{extracted_file_name}",
+        f"{extract_dirpath}/{extracted_file_name}",
+    )
+
+    args = {
+        "input_format": "github",
+        "output_format": "csv",
+        "config_path": Path(config_dirpath),
+        "extracted_path": Path(extract_dirpath + f"/{extracted_file_name}"),
+    }
+
+    command_calculate(args)
+
+    output_path = Path(f"{config_dirpath}/calc_msgram.csv")
+    assert output_path.stat().st_size > 0
+
+    shutil.rmtree(config_dirpath)
+    shutil.rmtree(extract_dirpath)
