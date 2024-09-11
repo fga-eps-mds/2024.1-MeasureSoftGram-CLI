@@ -6,6 +6,7 @@ import tempfile
 from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
+import filecmp
 
 import pytest
 
@@ -358,6 +359,36 @@ def test_calculate_csv_output():
 
     output_path = Path(f"{config_dirpath}/calc_msgram.csv")
     assert output_path.stat().st_size > 0
+
+    shutil.rmtree(config_dirpath)
+    shutil.rmtree(extract_dirpath)
+
+
+def test_calculate_json_output():
+    config_dirpath = tempfile.mkdtemp()
+    extract_dirpath = tempfile.mkdtemp()
+
+    shutil.copy("tests/unit/data/msgram.json", f"{config_dirpath}/msgram.json")
+
+    extracted_file_name = "github_fga-eps-mds-2024.1-MeasureSoftGram-DOC-28-07-2024-00-00-22-extracted.metrics"
+    shutil.copy(
+        f"tests/unit/data/{extracted_file_name}",
+        f"{extract_dirpath}/{extracted_file_name}",
+    )
+
+    args = {
+        "input_format": "github",
+        "output_format": "json",
+        "config_path": Path(config_dirpath),
+        "extracted_path": Path(extract_dirpath + f"/{extracted_file_name}"),
+    }
+
+    command_calculate(args)
+
+    output_path = Path(f"{config_dirpath}/calc_msgram.json")
+    expected_output = Path("tests/unit/data/calc_msgram_exp_github_output.json")
+    assert output_path.stat().st_size > 0
+    assert filecmp.cmp(output_path, expected_output, shallow=False)
 
     shutil.rmtree(config_dirpath)
     shutil.rmtree(extract_dirpath)
