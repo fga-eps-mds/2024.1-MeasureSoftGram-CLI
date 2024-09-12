@@ -40,15 +40,20 @@ def calculate_metrics(input_format, extracted_path, config):
     data_calculated = []
 
     if not extracted_path.is_file():
-        if not aggregate_metrics(input_format, extracted_path, config):
-            print_error(
-                "> [red] Failed to aggregate metrics, calculate was not performed. \n"
-            )
-            return data_calculated, False
+        # should not aggregate
+        #if not aggregate_metrics(input_format, extracted_path, config):
+        #    print_error(
+        #        "> [red] Failed to aggregate metrics, calculate was not performed. \n"
+        #    )
+        #    return data_calculated, False
 
         for file, file_name in read_multiple_files(
             extracted_path, input_format, "metrics"
         ):
+            # if file_name.startswith("perf_eff_"):
+            #     file_name = file_name[len("perf_eff_") :]
+            #     result = calculate_all(file, file_name, config)
+            # else: 
             if file_name.startswith("github_"):
                 file_name = file_name[len("github_") :]
             result = calculate_all(file, file_name, config)

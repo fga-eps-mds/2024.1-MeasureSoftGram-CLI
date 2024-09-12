@@ -30,12 +30,13 @@ def file_reader(path_file):
 
 
 def read_multiple_files(directory: Path, format: str, pattern: str):
-    if format == "github":
-        glob_pattern = f"github_*.{pattern}"
-    elif format == "sonarqube":
-        glob_pattern = f"[!github_]*.{pattern}"
-    else:
-        glob_pattern = f"*.{pattern}"
+    # if format == "github":
+    #     glob_pattern = f"github_*.{pattern}"
+    # elif format == "sonarqube":
+    #     glob_pattern = f"[!github_]*.{pattern}"
+    # else:
+    #     glob_pattern = f"*.{pattern}"
+    glob_pattern = f"*.{pattern}"
 
     for path_file in directory.glob(glob_pattern):
         try:
