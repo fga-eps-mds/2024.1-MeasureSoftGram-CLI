@@ -41,7 +41,7 @@ def create_parser():
         "--config_path",
         type=lambda p: Path(p).absolute(),
         default=DEFAULT_CONFIG_PATH,
-        help="Path to default config directory",
+        help="Path to the directory with the model configuration file (msgram.json).",
     )
     parser_init.set_defaults(func=command_init)  # function command init
 
@@ -56,7 +56,7 @@ def create_parser():
         "--config_path",
         type=lambda p: Path(p).absolute(),
         default=DEFAULT_CONFIG_PATH,
-        help="Path to default config directory.",
+        help="Path to the directory with the model configuration file (msgram.json).",
     )
 
     parser_list_config.add_argument(
@@ -71,14 +71,13 @@ def create_parser():
     parser_extract = subparsers.add_parser("extract", help="Extract supported metrics")
 
     parser_extract.add_argument(
-        "-o",
-        "--output_origin",
+        "-in",
+        "--input_origin",
         required=True,
         type=str,
         choices=(AVAILABLE_IMPORTS),
         help=(
-            "Import a metrics files/repository from some origin. Valid values are: "
-            + ", ".join(AVAILABLE_IMPORTS)
+            "Source of information. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
         ),
     )
 
@@ -102,8 +101,9 @@ def create_parser():
         "--label",
         type=str,
         help=(
-            "Selected label name for extracted user story issues. Format 'XX YY'."
-            + " Default, not case sensitive: 'US', 'User Story' or 'User Stories'"
+            "Selected label name to be considered in the Story Issues extraction."
+            + ' Format "XX YY", including quotation marks.'
+            + ' Default, not case sensitive: "US", "User Story" or "User Stories".'
         ),
     )
 
@@ -111,7 +111,9 @@ def create_parser():
         "-wf",
         "--workflows",
         type=str,
-        help="Selected workflow name to be considered in the CI Feedback Time extraction. Default: 'build'",
+        help="Selected workflow name to be considered in the CI Feedback Time extraction."
+        + ' Format "XX YY", including quotation marks.'
+        + ' Default, not case sensitive: "build".',
     )
 
     parser_extract.add_argument(
@@ -119,7 +121,8 @@ def create_parser():
         "--filter_date",
         type=str,
         help=(
-            "Filter range of dates considered on extraction, with format 'dd/mm/yyyy-dd/mm/yyyy'"
+            'Filter range of dates considered on extraction, with format "dd/mm/yyyy-dd/mm/yyyy"'
+            + ", including quotation marks."
         ),
     )
 
@@ -167,7 +170,7 @@ def create_parser():
         "--config_path",
         type=lambda p: Path(p).absolute(),
         default=DEFAULT_CONFIG_PATH,
-        help="Path to the config directory",
+        help="Path to the directory with the model configuration file (msgram.json).",
     )
 
     parser_calculate.add_argument(
@@ -178,7 +181,7 @@ def create_parser():
         choices=AVAILABLE_IMPORTS,
         default="sonarqube",
         help=(
-            "Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
+            "Source of information. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
         ),
     )
 
