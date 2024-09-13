@@ -10,7 +10,6 @@ from src.cli.commands.cmd_list import command_list
 from src.cli.commands.cmd_norm_diff import command_norm_diff
 
 from src.config.settings import (
-    AVAILABLE_IMPORTS,
     SUPPORTED_FORMATS,
     DEFAULT_CONFIG_PATH,
     AVAILABLE_GEN_FORMATS,
@@ -176,18 +175,6 @@ def create_parser():
         help="Path to the directory with the model configuration file (msgram.json).",
     )
 
-    # parser_calculate.add_argument(
-    #     "-in",
-    #     "--input_format",
-    #     required=True,
-    #     type=str,
-    #     choices=AVAILABLE_IMPORTS,
-    #     default="sonarqube",
-    #     help=(
-    #         "Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
-    #     ),
-    # )
-
     parser_calculate.add_argument(
         "-o",
         "--output_format",
@@ -211,7 +198,7 @@ def create_parser():
     parser_norm_diff.add_argument(
         "-rp",
         "--rp_path",
-        type=lambda p: path(p).absolute(),
+        type=lambda p: Path(p).absolute(),
         help="path to the .json file with the planned/wished values ​​for the quality "
         "characteristics of a release. quality requirements goals for a release.",
     )
@@ -219,7 +206,7 @@ def create_parser():
     parser_norm_diff.add_argument(
         "-rd",
         "--rd_path",
-        type=lambda p: path(p).absolute(),
+        type=lambda p: Path(p).absolute(),
         help="path to the .json file with the model-calculated values ​​for a release's "
         "quality characteristics observed/developed.",
     )
