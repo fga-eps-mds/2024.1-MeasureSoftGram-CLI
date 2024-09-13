@@ -32,10 +32,9 @@ def test_parser_init():
 
 def test_parser_list():
     parser = create_parser()
-    args = parser.parse_args(["list", "-cp", "/path/to/config", "all"])
+    args = parser.parse_args(["list", "-cp", "/path/to/config"])
     assert args.func == command_list
     assert args.config_path == Path("/path/to/config")
-    assert args.all == "all"
 
 
 def test_parser_extract():
@@ -44,24 +43,18 @@ def test_parser_extract():
     args = parser.parse_args(
         [
             "extract",
-            "-in",
-            "sonarqube",
-            "-dp",
+            "-sp",
             "/path/to/data",
             "-ep",
             "/path/to/extracted",
-            "-le",
-            "py",
-            "-rep",
+            "-gr",
             "/path/to/repo",
         ]
     )
     assert args.func == command_extract
-    assert args.input_origin == "sonarqube"
-    assert args.data_path == Path("/path/to/data")
+    assert args.sonar_path == Path("/path/to/data")
     assert args.extracted_path == Path("/path/to/extracted")
-    assert args.language_extension == "py"
-    assert args.repository_path == "/path/to/repo"
+    assert args.gh_repository == "/path/to/repo"
 
 
 def test_parser_calculate():
@@ -69,19 +62,15 @@ def test_parser_calculate():
     args = parser.parse_args(
         [
             "calculate",
-            "all",
             "-ep",
             "/path/to/extracted",
             "-cp",
             "/path/to/config",
             "-o",
             "csv",
-            "-in",
-            "github",
         ]
     )
     assert args.func == command_calculate
-    assert args.all == "all"
     assert args.extracted_path == Path("/path/to/extracted")
     assert args.config_path == Path("/path/to/config")
     assert args.output_format == "csv"
