@@ -16,10 +16,8 @@ from src.cli.resources.measure import calculate_measures
 from src.cli.resources.tsqmi import calculate_tsqmi
 from src.cli.resources.subcharacteristic import calculate_subcharacteristics
 from src.cli.utils import print_error, print_info, print_panel, print_rule, print_table
-from src.cli.aggregate_metrics import aggregate_metrics
 from src.cli.exceptions import exceptions
 from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG
-from resources import calculate_measures as core_calculate
 from src.cli.resources.perf_eff_measure import calculate_perf_eff_measures
 
 logger = logging.getLogger("msgram")
