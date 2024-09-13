@@ -165,6 +165,7 @@ def create_parser():
         "-ep",
         "--extracted_path",
         type=lambda p: Path(p).absolute(),
+        default=DEFAULT_CONFIG_PATH,
         help="Path to the extracted directory",
     )
 
