@@ -113,7 +113,7 @@ def test_extract_fail_date_format():
     args = {
         "extracted_path": Path(extract_dirpath),
         "gh_repository": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
-        "gh_filter_date": "20/06/2023-15/07/2021",
+        "gh_date_range": "20/06/2023-15/07/2021",
     }
 
     captured_output = StringIO()
