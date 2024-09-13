@@ -88,8 +88,8 @@ def build_json_output(
     version = re.search(r"\d{1,2}-\d{1,2}-\d{4}-\d{1,2}-\d{1,2}", repository_name)[0]
     repository = repository_name.split(version)[0][:-1]
     return {
-        "repository": repository,
-        "version": version,
+        "repository": [{"key": "repository", "value": repository}],
+        "version": [{"key": "version", "value": version}] if version else [],
         "measures": [
             {
                 "key": "response_time",
@@ -134,7 +134,7 @@ def build_json_output(
         "characteristics": [
             {
                 "key": "performance_efficiency",
-                "values": float(
+                "value": float(
                     get_value_by_key(
                         calculated_characteristics["characteristics"],
                         "performance_efficiency",
