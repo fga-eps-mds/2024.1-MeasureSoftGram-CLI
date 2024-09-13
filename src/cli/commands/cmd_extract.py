@@ -110,7 +110,7 @@ def extract_sonar(extracted_path: Path, sonar_path: Path, parser: GenericParser)
 
     valid_files = len(files)
 
-    print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
+    print_info(f"\n> Extract and save metrics [[blue ]{input_origin}[/]]:")
     with make_progress_bar() as progress_bar:
         task_request = progress_bar.add_task(
             "[#A9A9A9]Extracting files: ", total=len(files)
@@ -123,7 +123,7 @@ def extract_sonar(extracted_path: Path, sonar_path: Path, parser: GenericParser)
                 valid_files = valid_files - files_error
 
             name = get_infos_from_name(filename)
-            result = parser.parse(input_value=component, type_input=output_origin)
+            result = parser.parse(input_value=component, type_input=input_origin)
 
             save_file_with_results(extracted_path, filename, name, result)
 
