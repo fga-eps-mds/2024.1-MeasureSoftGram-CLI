@@ -44,6 +44,20 @@ def get_infos_from_name(filename: str) -> str:
     return f"{file_name}-extracted.metrics"
 
 
+def parse_input_quotes(user_input):
+    # Aspas para normalizar
+    quotes = "“‘«”’»"
+
+    if user_input:
+        # Remove aspas no início
+        user_input = user_input[1:] if user_input[0] in quotes else user_input
+
+        # Remove aspas no final
+        user_input = user_input[:-1] if user_input[-1] in quotes else user_input
+
+    return user_input
+
+
 def command_extract(args):
     time_init = perf_counter()
     try:
@@ -189,7 +203,7 @@ def command_extract(args):
         )
 
     print_panel(
-        "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'output_origin'"
+        "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'input_origin'"
     )
 
 

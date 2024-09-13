@@ -71,7 +71,8 @@ def calculate_metrics(extracted_path, config):
             if extracted_path.name.startswith("github_"):
                 file_name = file_name[len("github_") :]
             result = calculate_all(open_json_file(extracted_path), file_name, config)
-            return result, True
+            data_calculated.append(result)
+            return data_calculated, True
         except exceptions.MeasureSoftGramCLIException as e:
             print_error(f"[red]Error calculating {extracted_path}: {e}\n")
             return data_calculated, False
@@ -152,13 +153,13 @@ def calculate_all(json_data, file_name, config):
 def show_results(output_format, data_calculated, config_path):
 
     if output_format == "tabular":
-        show_tabulate(data_calculated)
+        show_tabulate(data_calculated[0])
 
     elif output_format == "raw":
-        print(data_calculated)
+        print(data_calculated[0])
 
     elif output_format == "tree":
-        show_tree(data_calculated, pre_config)
+        show_tree(data_calculated[0], pre_config)
 
     elif len(data_calculated) == 0:
         print_info(
