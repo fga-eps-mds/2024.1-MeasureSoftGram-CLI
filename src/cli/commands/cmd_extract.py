@@ -5,6 +5,7 @@ import os
 import re
 import sys
 from time import perf_counter
+from pathlib import Path
 
 from rich import print
 from rich.console import Console
@@ -58,8 +59,88 @@ def parse_input_quotes(user_input):
     return user_input
 
 
-def command_extract(args):
+def extract_github(
+    extracted_path: Path,
+    gh_repository: str,
+    gh_date_range: str,
+    gh_label: str,
+    gh_workflows: str,
+    parser: GenericParser,
+):
+    output_origin = "github"
+    if gh_date_range is not None and not is_valid_date_range(gh_date_range):
+        logger.error(
+            "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
+        )
+        print_warn(
+            "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
+        )
+        sys.exit(1)
+    filters = {
+        "labels": gh_label if gh_label else "US,User Story,User Stories",
+        "workflows": gh_workflows.split(",") if gh_workflows else "build",
+        "dates": gh_date_range if gh_date_range else None,
+    }
+    print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
+    result = parser.parse(
+        input_value=gh_repository, type_input=output_origin, filters=filters
+    )
+    repository_name = gh_repository.replace("/", "-")
+    save_file_with_results(
+        extracted_path,
+        gh_repository,
+        name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
+        result=result,
+    )
+
+
+def extract_sonar(extracted_path: Path, sonar_path: Path, parser: GenericParser):
     time_init = perf_counter()
+    output_origin = "sonarqube"
+
+    logger.debug(f"output_origin: {output_origin}")
+    logger.debug(f"data_path: {sonar_path}")
+    logger.debug(f"extracted_path: {extracted_path}")
+
+    files = list(sonar_path.glob("*.json"))
+
+    if not files:
+        print_warn(f"No JSON files found in the specified data_path: {sonar_path}\n")
+        sys.exit(1)
+
+    valid_files = len(files)
+
+    print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
+    with make_progress_bar() as progress_bar:
+        task_request = progress_bar.add_task(
+            "[#A9A9A9]Extracting files: ", total=len(files)
+        )
+        progress_bar.advance(task_request)
+
+        for component, filename, files_error in folder_reader(sonar_path, "json"):
+            if files_error:
+                progress_bar.update(task_request, advance=files_error)
+                valid_files = valid_files - files_error
+
+            name = get_infos_from_name(filename)
+            result = parser.parse(input_value=component, type_input=output_origin)
+
+            save_file_with_results(extracted_path, filename, name, result)
+
+            progress_bar.advance(task_request)
+
+        time_extract = perf_counter() - time_init
+        print_info(
+            f"\n\nMetrics successfully extracted [[blue bold]{valid_files}/{len(files)} "
+            f"files - {time_extract:0.2f} seconds[/]]!"
+        )
+
+
+def extract_perf_eff():
+    pass
+
+
+def command_extract(args):
     try:
         extracted_path = args["extracted_path"]
         sonar_path = args.get("sonar_path", None)
@@ -113,30 +194,8 @@ def command_extract(args):
 
     # Github repository is defined so we should generate github metrics
     if gh_repository:
-        output_origin = "github"
-        if gh_date_range is not None and not is_valid_date_range(gh_date_range):
-            logger.error(
-                "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
-            )
-            print_warn(
-                "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
-            )
-            sys.exit(1)
-        filters = {
-            "labels": gh_label if gh_label else "US,User Story,User Stories",
-            "workflows": gh_workflows.split(",") if gh_workflows else "build",
-            "dates": gh_date_range if gh_date_range else None,
-        }
-        print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
-        result = parser.parse(
-            input_value=gh_repository, type_input=output_origin, filters=filters
-        )
-        repository_name = gh_repository.replace("/", "-")
-        save_file_with_results(
-            extracted_path,
-            gh_repository,
-            name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
-            result=result,
+        extract_github(
+            extracted_path, gh_repository, gh_date_range, gh_label, gh_workflows, parser
         )
     elif gh_label or gh_workflows or gh_date_range:
         logger.error(
@@ -146,49 +205,6 @@ def command_extract(args):
             "Error: gh_repository must be specified in order to use gh_ parameters"
         )
         sys.exit(1)
-
-    # Sonargube path is defined so we should generate sonar metrics
-    if sonar_path:
-        output_origin = "sonarqube"
-
-        logger.debug(f"output_origin: {output_origin}")
-        logger.debug(f"data_path: {sonar_path}")
-        logger.debug(f"extracted_path: {extracted_path}")
-
-        files = list(sonar_path.glob("*.json"))
-
-        if not files:
-            print_warn(
-                f"No JSON files found in the specified data_path: {sonar_path}\n"
-            )
-            sys.exit(1)
-
-        valid_files = len(files)
-
-        print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
-        with make_progress_bar() as progress_bar:
-            task_request = progress_bar.add_task(
-                "[#A9A9A9]Extracting files: ", total=len(files)
-            )
-            progress_bar.advance(task_request)
-
-            for component, filename, files_error in folder_reader(sonar_path, "json"):
-                if files_error:
-                    progress_bar.update(task_request, advance=files_error)
-                    valid_files = valid_files - files_error
-
-                name = get_infos_from_name(filename)
-                result = parser.parse(input_value=component, type_input=output_origin)
-
-                save_file_with_results(extracted_path, filename, name, result)
-
-                progress_bar.advance(task_request)
-
-            time_extract = perf_counter() - time_init
-            print_info(
-                f"\n\nMetrics successfully extracted [[blue bold]{valid_files}/{len(files)} "
-                f"files - {time_extract:0.2f} seconds[/]]!"
-            )
 
     if pe_params == 3:
         # All pe_params are set, so we should extract the performance efficiency data
@@ -201,6 +217,10 @@ def command_extract(args):
             name=f"perf-eff_{pe_repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
             result=parsed_data,
         )
+
+    # Sonargube path is defined so we should generate sonar metrics
+    if sonar_path:
+        extract_sonar(extracted_path, sonar_path, parser)
 
     print_panel(
         "> Run [#008080]msgram calculate all -ep 'extracted_path' -cp 'extracted_path' -o 'input_origin'"
