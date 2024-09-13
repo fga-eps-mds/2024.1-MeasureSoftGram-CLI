@@ -29,7 +29,7 @@ def file_reader(path_file):
     return components
 
 
-def read_multiple_files(directory: Path, format: str, pattern: str):
+def read_multiple_files(directory: Path, pattern: str):
     # if format == "github":
     #     glob_pattern = f"github_*.{pattern}"
     # elif format == "sonarqube":

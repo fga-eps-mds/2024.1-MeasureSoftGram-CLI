@@ -58,8 +58,10 @@ def make_characteristics_input(calculated_subcharacteristics):
     }
 
 
-def build_json_output(calculated_characteristics, calculated_subcharacteristics, calculated_measures):
-    obj = {
+def build_json_output(repository_name, calculated_characteristics,
+                      calculated_subcharacteristics, calculated_measures):
+    return {
+        "repository": repository_name,
         "characteristics": [
             {
                 "key": "performance_efficiency",
@@ -94,9 +96,11 @@ def build_json_output(calculated_characteristics, calculated_subcharacteristics,
         ]
     }
 
-def calculate_perf_eff_measures(measures_input):
+def calculate_perf_eff_measures(repository_name, measures_input):
     calculated_measures = calculate_measures(measures_input)
     subcharacteristics_input = make_subcharacteristics_input(calculated_measures['measures'])
     calculated_subcharacteristics = calculate_subcharacteristics(subcharacteristics_input)
     characteristics_input = make_characteristics_input(calculated_subcharacteristics['subcharacteristics'])
     calculated_characteristics = calculate_characteristics(characteristics_input)
+    return build_json_output(repository_name, calculated_characteristics,
+                             calculated_subcharacteristics, calculated_measures)

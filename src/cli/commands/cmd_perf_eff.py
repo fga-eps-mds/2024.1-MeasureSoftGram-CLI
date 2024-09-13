@@ -8,7 +8,6 @@ from src.cli.utils import (
     print_error,
     print_info,
     print_rule,
-    validate_json_values,
 )
 from src.cli.exceptions import exceptions
 from resources import calculate_measures, calculate_subcharacteristics, calculate_characteristics

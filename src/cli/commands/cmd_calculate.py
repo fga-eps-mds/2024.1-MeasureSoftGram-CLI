@@ -19,6 +19,8 @@ from src.cli.utils import print_error, print_info, print_panel, print_rule, prin
 from src.cli.aggregate_metrics import aggregate_metrics
 from src.cli.exceptions import exceptions
 from src.config.settings import DEFAULT_CONFIG_PATH, FILE_CONFIG
+from resources import calculate_measures as core_calculate
+from src.cli.resources.perf_eff_measure import calculate_perf_eff_measures
 
 logger = logging.getLogger("msgram")
 
@@ -36,9 +38,10 @@ def read_config_file(config_path):
 # calculate_sonar
 # calculate_github
 
-def calculate_metrics(input_format, extracted_path, config):
+def calculate_metrics(extracted_path, config):
     data_calculated = []
 
+    print(extracted_path)
     if not extracted_path.is_file():
         # should not aggregate
         #if not aggregate_metrics(input_format, extracted_path, config):
@@ -48,16 +51,18 @@ def calculate_metrics(input_format, extracted_path, config):
         #    return data_calculated, False
 
         for file, file_name in read_multiple_files(
-            extracted_path, input_format, "metrics"
+            extracted_path, "metrics"
         ):
-            # if file_name.startswith("perf_eff_"):
-            #     file_name = file_name[len("perf_eff_") :]
-            #     result = calculate_all(file, file_name, config)
-            # else: 
-            if file_name.startswith("github_"):
-                file_name = file_name[len("github_") :]
-            result = calculate_all(file, file_name, config)
-            data_calculated.append(result)
+            print(file_name)
+            if file_name.startswith("perf-eff_"):
+                file_name = file_name[len("perf-eff_") :]
+                result = calculate_perf_eff_measures(file_name, file)
+                data_calculated.append(result)
+            else: 
+                if file_name.startswith("github_"):
+                    file_name = file_name[len("github_") :]
+                result = calculate_all(file, file_name, config)
+                data_calculated.append(result)
 
         return data_calculated, True
     else:
@@ -75,7 +80,7 @@ def calculate_metrics(input_format, extracted_path, config):
 def command_calculate(args):
     try:
         output_format: str = args["output_format"]
-        input_format: str = args["input_format"]
+        # input_format: str = args["input_format"]
         config_path = args["config_path"]
         extracted_path = args["extracted_path"]
 
@@ -93,7 +98,7 @@ def command_calculate(args):
 
     print_info("\n> [blue] Reading extracted files:[/]")
 
-    data_calculated, success = calculate_metrics(input_format, extracted_path, config)
+    data_calculated, success = calculate_metrics(extracted_path, config)
 
     if success:
         print_info("\n[#A9A9A9]All calculations performed[/] successfully!")

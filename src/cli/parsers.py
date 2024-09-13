@@ -148,14 +148,14 @@ def create_parser():
         help="Calculates all entities",
     )
 
-    parser_calculate.add_argument(
-        "all",
-        type=str,
-        nargs="?",
-        help=(
-            "Returns the calculated value of the entities: measures, subcharacteristics, characteristics, tsqmi"
-        ),
-    )
+    # parser_calculate.add_argument(
+    #     "all",
+    #     type=str,
+    #     nargs="?",
+    #     help=(
+    #         "Returns the calculated value of the entities: measures, subcharacteristics, characteristics, tsqmi"
+    #     ),
+    # )
 
     parser_calculate.add_argument(
         "-ep",
@@ -172,17 +172,17 @@ def create_parser():
         help="Path to the config directory",
     )
 
-    parser_calculate.add_argument(
-        "-in",
-        "--input_format",
-        required=True,
-        type=str,
-        choices=AVAILABLE_IMPORTS,
-        default="sonarqube",
-        help=(
-            "Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
-        ),
-    )
+    # parser_calculate.add_argument(
+    #     "-in",
+    #     "--input_format",
+    #     required=True,
+    #     type=str,
+    #     choices=AVAILABLE_IMPORTS,
+    #     default="sonarqube",
+    #     help=(
+    #         "Format of .msgram files. Valid values are: " + ", ".join(AVAILABLE_IMPORTS)
+    #     ),
+    # )
 
     parser_calculate.add_argument(
         "-o",
