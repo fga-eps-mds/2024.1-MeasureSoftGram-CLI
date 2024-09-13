@@ -67,7 +67,7 @@ def extract_github(
     gh_workflows: str,
     parser: GenericParser,
 ):
-    output_origin = "github"
+    input_origin = "github"
     if gh_date_range is not None and not is_valid_date_range(gh_date_range):
         logger.error(
             "Error: Range of dates for filter must be in format 'dd/mm/yyyy-dd/mm/yyyy'"
@@ -81,9 +81,9 @@ def extract_github(
         "workflows": gh_workflows.split(",") if gh_workflows else "build",
         "dates": gh_date_range if gh_date_range else None,
     }
-    print_info(f"\n> Extract and save metrics [[blue ]{output_origin}[/]]:")
+    print_info(f"\n> Extract and save metrics [[blue ]{input_origin}[/]]:")
     result = parser.parse(
-        input_value=gh_repository, type_input=output_origin, filters=filters
+        input_value=gh_repository, type_input=input_origin, filters=filters
     )
     repository_name = gh_repository.replace("/", "-")
     save_file_with_results(
@@ -96,9 +96,9 @@ def extract_github(
 
 def extract_sonar(extracted_path: Path, sonar_path: Path, parser: GenericParser):
     time_init = perf_counter()
-    output_origin = "sonarqube"
+    input_origin = "sonarqube"
 
-    logger.debug(f"output_origin: {output_origin}")
+    logger.debug(f"input_origin: {input_origin}")
     logger.debug(f"data_path: {sonar_path}")
     logger.debug(f"extracted_path: {extracted_path}")
 
