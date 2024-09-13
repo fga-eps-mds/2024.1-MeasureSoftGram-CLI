@@ -19,11 +19,9 @@ def test_extract_metrics_folder_not_found_exception_handling():
         [
             "msgram",
             "extract",
-            "-o",
-            "sonarqube",
             "-ep",
             config_dirpath,
-            "-dp",
+            "-sp",
             "sonar-output-fake",
         ]
     )
@@ -39,11 +37,9 @@ def test_extract_metrics_config_folder_not_found_exception_handling():
         [
             "msgram",
             "extract",
-            "-o",
-            "sonarqube",
             "-ep",
             "config-fake",
-            "-dp",
+            "-sp",
             "sonar-output-fake",
         ]
     )
