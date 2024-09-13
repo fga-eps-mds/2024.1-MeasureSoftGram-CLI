@@ -62,7 +62,11 @@ def command_extract(args):
         print_warn(f"KeyError: args[{e}] - non-existent parameters")
         exit(1)
 
-    pe_params = (pe_release1 is not None) + (pe_release2 is not None) + (pe_repository_name is not None)
+    pe_params = (
+        (pe_release1 is not None)
+        + (pe_release2 is not None)
+        + (pe_repository_name is not None)
+    )
     # First check if sonar_path and gh_repository are none
     if (sonar_path is None) and (gh_repository is None) and (pe_params == 0):
         logger.error(
@@ -134,7 +138,9 @@ def command_extract(args):
         files = list(sonar_path.glob("*.json"))
 
         if not files:
-            print_warn(f"No JSON files found in the specified data_path: {sonar_path}\n")
+            print_warn(
+                f"No JSON files found in the specified data_path: {sonar_path}\n"
+            )
             sys.exit(1)
 
         valid_files = len(files)
@@ -166,16 +172,18 @@ def command_extract(args):
 
     if pe_params == 3:
         # All pe_params are set, so we should extract the performance efficiency data
-        parsed_data = parse_performance_efficiency_data(pe_release1, pe_release2, pe_repository_name)
+        parsed_data = parse_performance_efficiency_data(
+            pe_release1, pe_release2, pe_repository_name
+        )
         save_file_with_results(
             extracted_path,
             pe_repository_name,
             name=f"perf-eff_{pe_repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
-            result=parsed_data
+            result=parsed_data,
         )
     elif pe_params == 0:
         pass
-    else: 
+    else:
         print_warn(
             "Error: Some pe_ parameters for extracting the performance efficiency data are missing"
         )

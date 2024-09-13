@@ -6,6 +6,7 @@ from src.cli.utils import (
     print_rule,
 )
 
+
 def parse_performance_efficiency_data(path1: Path, path2: Path, repo_name: str):
     try:
         release1_df = pd.read_csv(path1)

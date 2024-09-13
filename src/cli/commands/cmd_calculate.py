@@ -35,8 +35,10 @@ def read_config_file(config_path):
         print_rule()
         exit(1)
 
+
 # calculate_sonar
 # calculate_github
+
 
 def calculate_metrics(extracted_path, config):
     data_calculated = []
@@ -44,21 +46,19 @@ def calculate_metrics(extracted_path, config):
     print(extracted_path)
     if not extracted_path.is_file():
         # should not aggregate
-        #if not aggregate_metrics(input_format, extracted_path, config):
+        # if not aggregate_metrics(input_format, extracted_path, config):
         #    print_error(
         #        "> [red] Failed to aggregate metrics, calculate was not performed. \n"
         #    )
         #    return data_calculated, False
 
-        for file, file_name in read_multiple_files(
-            extracted_path, "metrics"
-        ):
+        for file, file_name in read_multiple_files(extracted_path, "metrics"):
             print(file_name)
             if file_name.startswith("perf-eff_"):
                 file_name = file_name[len("perf-eff_") :]
                 result = calculate_perf_eff_measures(file_name, file)
                 data_calculated.append(result)
-            else: 
+            else:
                 if file_name.startswith("github_"):
                     file_name = file_name[len("github_") :]
                 result = calculate_all(file, file_name, config)
