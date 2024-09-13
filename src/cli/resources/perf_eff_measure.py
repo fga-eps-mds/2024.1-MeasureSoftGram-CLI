@@ -1,3 +1,5 @@
+import re
+
 from resources import (
     calculate_measures,
     calculate_subcharacteristics,
@@ -83,8 +85,52 @@ def build_json_output(
     calculated_subcharacteristics,
     calculated_measures,
 ):
+    version = re.search(r"\d{1,2}-\d{1,2}-\d{4}-\d{1,2}-\d{1,2}", repository_name)[0]
+    repository = repository_name.split(version)[0][:-1]
     return {
-        "repository": repository_name,
+        "repository": repository,
+        "version": version,
+        "measures": [
+            {
+                "key": "response_time",
+                "value": get_value_by_key(
+                    calculated_measures["measures"], "response_time"
+                ),
+            },
+            {
+                "key": "cpu_utilization",
+                "value": get_value_by_key(
+                    calculated_measures["measures"], "cpu_utilization"
+                ),
+            },
+            {
+                "key": "memory_utilization",
+                "value": get_value_by_key(
+                    calculated_measures["measures"],
+                    "memory_utilization",
+                ),
+            },
+        ],
+        "subcharacteristics": [
+            {
+                "key": "time_behaviour",
+                "value": float(
+                    get_value_by_key(
+                        calculated_subcharacteristics["subcharacteristics"],
+                        "time_behaviour",
+                    )
+                ),
+            },
+            {
+                "key": "resource_utilization",
+                "value": float(
+                    get_value_by_key(
+                        calculated_subcharacteristics["subcharacteristics"],
+                        "resource_utilization",
+                    )
+                ),
+            },
+        ],
         "characteristics": [
             {
                 "key": "performance_efficiency",
@@ -94,50 +140,7 @@ def build_json_output(
                         "performance_efficiency",
                     )
                 ),
-                "subcharacteristics": [
-                    {
-                        "key": "time_behaviour",
-                        "value": float(
-                            get_value_by_key(
-                                calculated_subcharacteristics["subcharacteristics"],
-                                "time_behaviour",
-                            )
-                        ),
-                        "measures": [
-                            {
-                                "key": "response_time",
-                                "value": get_value_by_key(
-                                    calculated_measures["measures"], "response_time"
-                                ),
-                            },
-                        ],
-                    },
-                    {
-                        "key": "resource_utilization",
-                        "value": float(
-                            get_value_by_key(
-                                calculated_subcharacteristics["subcharacteristics"],
-                                "resource_utilization",
-                            )
-                        ),
-                        "measures": [
-                            {
-                                "key": "cpu_utilization",
-                                "value": get_value_by_key(
-                                    calculated_measures["measures"], "cpu_utilization"
-                                ),
-                            },
-                            {
-                                "key": "memory_utilization",
-                                "value": get_value_by_key(
-                                    calculated_measures["measures"],
-                                    "memory_utilization",
-                                ),
-                            },
-                        ],
-                    },
-                ],
-            },
+            }
         ],
     }
 
