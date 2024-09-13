@@ -8,7 +8,6 @@ from src.cli.commands.cmd_extract import command_extract
 from src.cli.commands.cmd_calculate import command_calculate
 from src.cli.commands.cmd_list import command_list
 from src.cli.commands.cmd_norm_diff import command_norm_diff
-from src.cli.commands.cmd_perf_eff import command_perf_eff
 
 from src.config.settings import (
     AVAILABLE_IMPORTS,
@@ -260,27 +259,5 @@ def create_parser():
         help=("The format of the output (export) values is tabular"),
     )
     parser_calculate.set_defaults(func=command_diff)
-
-    # =====================================< COMMAND perf_eff >=====================================
-    parser_perf_eff = subparsers.add_parser(
-        "perf_eff",
-        help="Calculates the performance efficiency between two releases",
-    )
-
-    parser_perf_eff.add_argument(
-        "-fr",
-        "--first_release",
-        type=lambda p: Path(p).absolute(),
-        help="",
-    )
-
-    parser_perf_eff.add_argument(
-        "-sr",
-        "--second_release",
-        type=lambda p: Path(p).absolute(),
-        help="",
-    )
-
-    parser_perf_eff.set_defaults(func=command_perf_eff)  # function command perf_eff
 
     return parser
