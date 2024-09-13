@@ -26,7 +26,6 @@ def parse_performance_efficiency_data(path1: Path, path2: Path, repo_name: str):
         endpoint_calls_2 = release2_df[release2_endpoints].values.tolist()
 
         measures = {
-            "repository": repo_name,
             "measures": [
                 {
                     "key": "cpu_utilization",
