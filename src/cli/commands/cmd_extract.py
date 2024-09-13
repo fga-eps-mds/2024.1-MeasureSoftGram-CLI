@@ -41,7 +41,7 @@ def get_infos_from_name(filename: str) -> str:
 
     file_name = filename.split(".")[0]
 
-    return f"{file_name}-extracted.msgram"
+    return f"{file_name}-extracted.metrics"
 
 
 def command_extract(args):
@@ -67,6 +67,12 @@ def command_extract(args):
         + (pe_release2 is not None)
         + (pe_repository_name is not None)
     )
+    if pe_params > 0 and pe_params < 3:
+        print_warn(
+            "Error: Some pe_ parameters for extracting the performance efficiency data are missing"
+        )
+        exit()
+
     # First check if sonar_path and gh_repository are none
     if (sonar_path is None) and (gh_repository is None) and (pe_params == 0):
         logger.error(
@@ -115,7 +121,7 @@ def command_extract(args):
         save_file_with_results(
             extracted_path,
             gh_repository,
-            name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.msgram",
+            name=f"github_{repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
             result=result,
         )
     elif gh_label or gh_workflows or gh_date_range:
@@ -180,12 +186,6 @@ def command_extract(args):
             pe_repository_name,
             name=f"perf-eff_{pe_repository_name}-{datetime.now().strftime('%d-%m-%Y-%H-%M-%S')}-extracted.metrics",
             result=parsed_data,
-        )
-    elif pe_params == 0:
-        pass
-    else:
-        print_warn(
-            "Error: Some pe_ parameters for extracting the performance efficiency data are missing"
         )
 
     print_panel(
