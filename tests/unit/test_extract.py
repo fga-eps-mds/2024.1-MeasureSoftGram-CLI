@@ -11,10 +11,8 @@ from pathlib import Path
 from src.cli.commands.cmd_extract import get_infos_from_name, command_extract
 
 EXTRACT_ARGS = {
-    "input_origin": "sonarqube",
     "extracted_path": Path(""),
-    "data_path": Path(""),
-    "language_extension": "py",
+    "sonar_path": Path(""),
 }
 
 
@@ -23,7 +21,7 @@ def test_get_file_infos():
 
     file_name = get_infos_from_name(file_path)
     assert (
-        "fga-eps-mds-2022-2-MeasureSoftGram-CLI-01-11-2023-21-59-03-develop-extracted.msgram"
+        "fga-eps-mds-2022-2-MeasureSoftGram-CLI-01-11-2023-21-59-03-develop-extracted.metrics"
         in file_name
     )
 
@@ -49,10 +47,8 @@ def test_command_extract_should_succeed():
     )
 
     args = {
-        "input_origin": "sonarqube",
         "extracted_path": Path(config_dirpath),
-        "data_path": Path(extract_dirpath),
-        "language_extension": "py",
+        "sonar_path": Path(extract_dirpath),
     }
 
     captured_output = StringIO()
@@ -65,7 +61,7 @@ def test_command_extract_should_succeed():
     assert "Metrics successfully extracted" in captured_output.getvalue()
     assert os.path.isfile(
         f"{config_dirpath}/fga-eps-mds-2022-2-MeasureSoftGram-"
-        "CLI-01-11-2023-21-59-03-develop-extracted.msgram"
+        "CLI-01-11-2023-21-59-03-develop-extracted.metrics"
     )
 
     shutil.rmtree(config_dirpath)
@@ -74,7 +70,7 @@ def test_command_extract_should_succeed():
 
 @pytest.mark.parametrize(
     "extract_arg",
-    ["input_origin", "extracted_path", "language_extension"],
+    ["extracted_path"],
 )
 def test_extract_invalid_args(extract_arg):
     captured_output = StringIO()
@@ -96,8 +92,6 @@ def test_extract_invalid_args(extract_arg):
 def test_extract_fail_no_dp_or_rep():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "input_origin": "sonarqube",
-        "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
     }
 
@@ -109,76 +103,7 @@ def test_extract_fail_no_dp_or_rep():
     sys.stdout = sys.__stdout__
 
     assert (
-        "It is necessary to pass the data_path or repository_path parameters"
-        in captured_output.getvalue()
-    )
-
-
-def test_extract_fail_sonarqube_wf():
-    extract_dirpath = tempfile.mkdtemp()
-    args = {
-        "input_origin": "sonarqube",
-        "language_extension": "py",
-        "extracted_path": Path(extract_dirpath),
-        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
-        "workflows": "pages build and deployment",
-    }
-
-    captured_output = StringIO()
-    sys.stdout = captured_output
-    with pytest.raises(SystemExit):
-        command_extract(args)
-
-    sys.stdout = sys.__stdout__
-
-    assert (
-        'Error: The parameter "-wf" must accompany a github repository output'
-        in captured_output.getvalue()
-    )
-
-
-def test_extract_fail_sonarqube_lb():
-    extract_dirpath = tempfile.mkdtemp()
-    args = {
-        "input_origin": "sonarqube",
-        "language_extension": "py",
-        "extracted_path": Path(extract_dirpath),
-        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
-        "label": "US",
-    }
-
-    captured_output = StringIO()
-    sys.stdout = captured_output
-    with pytest.raises(SystemExit):
-        command_extract(args)
-
-    sys.stdout = sys.__stdout__
-
-    assert (
-        'Error: The parameter "-lb" must accompany a github repository output'
-        in captured_output.getvalue()
-    )
-
-
-def test_extract_fail_sonarqube_fd():
-    extract_dirpath = tempfile.mkdtemp()
-    args = {
-        "input_origin": "sonarqube",
-        "language_extension": "py",
-        "extracted_path": Path(extract_dirpath),
-        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
-        "filter_date": "20/06/2023-15/07/2023",
-    }
-
-    captured_output = StringIO()
-    sys.stdout = captured_output
-    with pytest.raises(SystemExit):
-        command_extract(args)
-
-    sys.stdout = sys.__stdout__
-
-    assert (
-        'Error: The parameter "-fd" must accompany a github repository output'
+        "It is necessary to pass sonar_path, github_repository or the pe_ parameters"
         in captured_output.getvalue()
     )
 
@@ -186,11 +111,9 @@ def test_extract_fail_sonarqube_fd():
 def test_extract_fail_date_format():
     extract_dirpath = tempfile.mkdtemp()
     args = {
-        "input_origin": "github",
-        "language_extension": "py",
         "extracted_path": Path(extract_dirpath),
-        "repository_path": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
-        "filter_date": "20/06/2023-15/07/2021",
+        "gh_repository": "fga-eps-mds/2023-1-MeasureSoftGram-DOC",
+        "gh_date_range": "20/06/2023-15/07/2021",
     }
 
     captured_output = StringIO()
@@ -208,10 +131,8 @@ def test_extract_fail_date_format():
 
 def test_extract_directory_not_exist():
     args = {
-        "input_origin": "sonarqube",
-        "language_extension": "py",
         "extracted_path": Path("tests/directory_not_exist"),
-        "data_path": Path("tests/directory_not_exist"),
+        "sonar_path": Path("tests/directory_not_exist"),
     }
 
     captured_output = StringIO()

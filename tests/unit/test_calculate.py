@@ -15,7 +15,6 @@ from src.cli.jsonReader import open_json_file
 from staticfiles import DEFAULT_PRE_CONFIG as pre_config
 
 CALCULATE_ARGS = {
-    "input_format": "github",
     "output_format": "csv",
     "config_path": Path(""),
     "extracted_path": Path(""),
@@ -81,7 +80,7 @@ def test_show_tree(capfd):
 
 
 @pytest.mark.parametrize(
-    "calculate_arg", ["input_format", "output_format", "config_path", "extracted_path"]
+    "calculate_arg", ["output_format", "config_path", "extracted_path"]
 )
 def test_calculate_invalid_args(calculate_arg):
     captured_output = StringIO()
@@ -101,16 +100,16 @@ def test_calculate_invalid_args(calculate_arg):
 
 
 @pytest.mark.parametrize(
-    "input_format,output_format,multiple_files",
+    "output_format,multiple_files",
     [
-        ("sonar", "tabular", False),
-        ("sonar", "tree", False),
-        ("sonar", "raw", False),
-        ("github", "csv", True),
-        ("github", "json", True),
+        ("tabular", False),
+        ("tree", False),
+        ("raw", False),
+        ("csv", True),
+        ("json", True),
     ],
 )
-def test_calculate_file(input_format, output_format, multiple_files):
+def test_calculate_file(output_format, multiple_files):
     config_dirpath = tempfile.mkdtemp()
     extract_dirpath = tempfile.mkdtemp()
 
@@ -123,12 +122,9 @@ def test_calculate_file(input_format, output_format, multiple_files):
     )
 
     args = {
-        "input_format": input_format,
         "output_format": output_format,
         "config_path": Path(config_dirpath),
-        "extracted_path": Path(
-            extract_dirpath + (f"/{extracted_file_name}" if not multiple_files else "")
-        ),
+        "extracted_path": Path(extract_dirpath + (f"/{extracted_file_name}")),
     }
     if not multiple_files:
         calculate_patch = patch("builtins.input", return_value=output_format)
@@ -136,8 +132,9 @@ def test_calculate_file(input_format, output_format, multiple_files):
 
     command_calculate(args)
 
-    assert len(os.listdir(config_dirpath)) == 1
-    assert len(os.listdir(extract_dirpath)) == 1
+    if multiple_files is False:
+        assert len(os.listdir(config_dirpath)) == 1
+        assert len(os.listdir(extract_dirpath)) == 1
 
     shutil.rmtree(config_dirpath)
     shutil.rmtree(extract_dirpath)
@@ -283,7 +280,6 @@ def test_calculate_invalid_config_file():
     shutil.copy("tests/unit/data/invalid_json.json", f"{config_dirpath}/msgram.json")
 
     args = {
-        "input_format": "github",
         "output_format": "csv",
         "config_path": Path(config_dirpath),
         "extracted_path": Path("."),
@@ -317,7 +313,6 @@ def test_calculate_invalid_extracted_file():
     )
 
     args = {
-        "input_format": "github",
         "output_format": "csv",
         "config_path": Path(config_dirpath),
         "extracted_path": Path(extract_dirpath + f"/{extracted_file_name}"),
@@ -349,7 +344,6 @@ def test_calculate_csv_output():
     )
 
     args = {
-        "input_format": "github",
         "output_format": "csv",
         "config_path": Path(config_dirpath),
         "extracted_path": Path(extract_dirpath + f"/{extracted_file_name}"),
@@ -379,7 +373,6 @@ def test_calculate_json_output():
     )
 
     args = {
-        "input_format": "github",
         "output_format": "json",
         "config_path": Path(config_dirpath),
         "extracted_path": Path(extract_dirpath + f"/{extracted_file_name}"),
