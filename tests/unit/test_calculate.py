@@ -132,7 +132,7 @@ def test_calculate_file(output_format, multiple_files):
 
     command_calculate(args)
 
-    if multiple_files == False:
+    if multiple_files is False:
         assert len(os.listdir(config_dirpath)) == 1
         assert len(os.listdir(extract_dirpath)) == 1
 
