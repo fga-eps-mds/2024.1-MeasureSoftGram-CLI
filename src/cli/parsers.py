@@ -106,7 +106,7 @@ def create_parser():
 
     parser_extract.add_argument(
         "-gd",
-        "--github_date_range",
+        "--gh_date_range",
         type=str,
         help=(
             'Filter range of dates considered on extraction, with format "dd/mm/yyyy-dd/mm/yyyy"'

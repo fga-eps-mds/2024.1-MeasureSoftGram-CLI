@@ -207,6 +207,8 @@ def command_extract(args):
         sys.exit(1)
 
     if pe_params == 3:
+        input_origin = "performance-efficiency"
+        print_info(f"\n> Extract and save metrics [[blue ]{input_origin}[/]]:")
         # All pe_params are set, so we should extract the performance efficiency data
         parsed_data = parse_performance_efficiency_data(
             pe_release1, pe_release2, pe_repository_name
