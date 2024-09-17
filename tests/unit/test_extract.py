@@ -143,3 +143,40 @@ def test_extract_directory_not_exist():
     sys.stdout = sys.__stdout__
 
     assert "FileNotFoundError: extract directory" in captured_output.getvalue()
+
+
+def test_performance_efficiency_data_extraction():
+    config_dirpath = tempfile.mkdtemp()
+    extract_dirpath = tempfile.mkdtemp()
+
+    shutil.copy("tests/unit/data/msgram.json", f"{config_dirpath}/msgram.json")
+
+    shutil.copy(
+        "tests/unit/data/perf-eff-data-1.csv",
+        f"{extract_dirpath}/perf-eff-data-1.csv",
+    )
+
+    shutil.copy(
+        "tests/unit/data/perf-eff-data-2.csv",
+        f"{extract_dirpath}/perf-eff-data-2.csv",
+    )
+
+    args = {
+        "extracted_path": Path(extract_dirpath),
+        "pe_release_1": Path(f"{extract_dirpath}/perf-eff-data-1.csv"),
+        "pe_release_2": Path(f"{extract_dirpath}/perf-eff-data-2.csv"),
+        "pe_repository_name": "perf-eff-csv",
+    }
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
+
+    command_extract(args)
+
+    sys.stdout = sys.__stdout__
+
+    assert len(os.listdir(config_dirpath)) == 1
+    assert len(os.listdir(extract_dirpath)) == 3
+
+    shutil.rmtree(config_dirpath)
+    shutil.rmtree(extract_dirpath)
